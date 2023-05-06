@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -30,7 +31,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                 ) {
                     Column {
-
                         HeadAvatar()
                         MiniHeadColumn()
 //                        PlaySampleAudio()
@@ -52,12 +52,18 @@ fun PlaySampleAudio() {
 @Composable
 fun HeadAvatar() {
     Image(
-        modifier = Modifier.size(256.dp),
+        modifier = Modifier.size(256.dp).clickable {
+            clickHeadAvatar()
+        },
         imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
         contentDescription = "head",
 
 
     )
+}
+
+fun clickHeadAvatar(){
+    println("click clickHeadAvatar")
 }
 
 @Preview(showBackground = true)
