@@ -58,11 +58,12 @@ fun BoxMiniHeader(countSoundFiles: Int) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(7)
         ) {
+            var numberMiniHead: Int = 0
             items(numbers.size) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    MiniHeadItem(numbers)
-
+                    MiniHeadItem(numberMiniHead)
                 }
+                numberMiniHead += 1
             }
         }
     }
@@ -93,7 +94,7 @@ fun DefaultPreview() {
 }
 
 @Composable
-fun MiniHeadItem(numbers: List<Int>) {
+fun MiniHeadItem(numberMiniHead: Int) {
     Image(
         modifier = Modifier
             .size(36.dp),
@@ -101,7 +102,7 @@ fun MiniHeadItem(numbers: List<Int>) {
         contentDescription = "item",
 
         )
-    println(numbers)
+    println(numberMiniHead)
 
 }
 
