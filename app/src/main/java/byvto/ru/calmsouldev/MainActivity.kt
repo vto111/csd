@@ -19,7 +19,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import byvto.ru.calmsouldev.ui.theme.CalmSoulDevTheme
-
+import kotlin.random.Random
 
 
 class MainActivity() : ComponentActivity() {
@@ -30,6 +30,7 @@ class MainActivity() : ComponentActivity() {
         val listSoundFile = assets.list("ogg")
         val countSoundFiles = listSoundFile?.count()?.toString()!!.toInt()
         println(countSoundFiles)
+//        getRandom(countSoundFiles)
         setContent {
             CalmSoulDevTheme {
                 // A surface container using the 'background' color from the theme
@@ -38,7 +39,7 @@ class MainActivity() : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                 ) {
                     Column {
-                        HeadAvatar()
+                        HeadAvatar(countSoundFiles)
                         BoxMiniHeader(countSoundFiles)
                     }
                 }
@@ -47,6 +48,11 @@ class MainActivity() : ComponentActivity() {
     }
 }
 
+fun getRandom(countSoundFiles: Int): Int {
+    val randomValues = List(1) { Random.nextInt(0, countSoundFiles) }
+    return randomValues[0]
+
+}
 @Composable
 fun BoxMiniHeader(countSoundFiles: Int) {
     Box(
@@ -70,13 +76,13 @@ fun BoxMiniHeader(countSoundFiles: Int) {
 }
 
 @Composable
-fun HeadAvatar() {
+fun HeadAvatar(countSoundFiles: Int) {
     Image(
         modifier = Modifier
 
             .size(256.dp)
             .clickable {
-                clickHeadAvatar()
+                clickHeadAvatar(countSoundFiles)
             },
         imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
         contentDescription = "head",
@@ -85,13 +91,13 @@ fun HeadAvatar() {
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CalmSoulDevTheme {
-        HeadAvatar()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    CalmSoulDevTheme {
+//        HeadAvatar(countSoundFiles)
+//    }
+//}
 
 @Composable
 fun MiniHeadItem(numberMiniHead: Int) {
@@ -106,7 +112,10 @@ fun MiniHeadItem(numberMiniHead: Int) {
 
 }
 
-fun clickHeadAvatar(){
+fun clickHeadAvatar(countSoundFiles: Int) {
+
+    val numberRandom = getRandom(countSoundFiles)
     println("click clickHeadAvatar")
+    println(numberRandom)
 
 }
