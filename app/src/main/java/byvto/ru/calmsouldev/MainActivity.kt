@@ -24,12 +24,19 @@ class MainActivity(var NumbersForMiniHead: Int = 0) : ComponentActivity() {
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        /**
+         * Работа с базой данных
+         * */
+
+
         //получение списка треков
         val listSoundFile = assets.list("ogg")
         // объект для работы со списком файлов
         val objRandomNumberFile = RandomNumberFile(listSoundFile)
         // присвоение общей переменной количество файлов
         NumbersForMiniHead = objRandomNumberFile.getCountFiles()!!
+
+
 //        println(objRandomNumberFile.getCountFiles())
 //        val countSoundFiles = listSoundFile?.count()?.toString()!!.toInt()
 //        println(countSoundFiles)
