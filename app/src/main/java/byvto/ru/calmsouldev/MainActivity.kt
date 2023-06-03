@@ -27,7 +27,7 @@ class MainActivity(var NumbersForMiniHead: Int = 0) : ComponentActivity() {
         //получение списка треков
         val listSoundFile = assets.list("ogg")
 
-        var objRandomNumberFile = RandomNumberFile(listSoundFile)
+        val objRandomNumberFile = RandomNumberFile(listSoundFile)
         // присвоение общей переменной количество файлов
         NumbersForMiniHead = objRandomNumberFile.getCountFiles()!!
 //        println(objRandomNumberFile.getCountFiles())
@@ -73,14 +73,14 @@ fun BoxMiniHeader(NumbersForMiniHead: Int) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(7)
         ) {
-            var numberMiniHead: Int = 0
+//            var numberMiniHead: Int = 0
 //            val objRandomNumberFile = RandomNumberFile()
 //            val numbers = objRandomNumberFile.getNumbersForMiniHead()
             items(NumbersForMiniHead) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    MiniHeadItem(numberMiniHead)
+                    MiniHeadItem(it)
                 }
-                numberMiniHead += 1
+//                numberMiniHead += 1
             }
         }
     }
