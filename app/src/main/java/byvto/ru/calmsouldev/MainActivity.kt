@@ -16,20 +16,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import byvto.ru.calmsouldev.ui.theme.CalmSoulDevTheme
-import kotlin.random.Random
 
 
-class MainActivity() : ComponentActivity() {
+class MainActivity(var NumbersForMiniHead: Int = 0) : ComponentActivity() {
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        //получение списка треков
         val listSoundFile = assets.list("ogg")
-        val countSoundFiles = listSoundFile?.count()?.toString()!!.toInt()
-        println(countSoundFiles)
+
+        var objRandomNumberFile = RandomNumberFile(listSoundFile)
+        // присвоение общей переменной количество файлов
+        NumbersForMiniHead = objRandomNumberFile.getCountFiles()!!
+//        println(objRandomNumberFile.getCountFiles())
+//        val countSoundFiles = listSoundFile?.count()?.toString()!!.toInt()
+//        println(countSoundFiles)
+
+//        val objMMP = MainMediaPlayer()
+//        println(objMMP)
+//        println(objMMP.getNumbersSound())
+
+//        println(objMMP)
 //        getRandom(countSoundFiles)
         setContent {
             CalmSoulDevTheme {
@@ -39,8 +48,8 @@ class MainActivity() : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                 ) {
                     Column {
-                        HeadAvatar(countSoundFiles)
-                        BoxMiniHeader(countSoundFiles)
+                        HeadAvatar()
+                        BoxMiniHeader(NumbersForMiniHead)
                     }
                 }
             }
@@ -48,24 +57,26 @@ class MainActivity() : ComponentActivity() {
     }
 }
 
-fun getRandom(countSoundFiles: Int): Int {
-    val randomValues = List(1) { Random.nextInt(0, countSoundFiles) }
-    return randomValues[0]
-
-}
+//fun getRandom(countSoundFiles: Int): Int {
+//    val randomValues = List(1) { Random.nextInt(0, countSoundFiles) }
+//    return randomValues[0]
+//
+//}
 @Composable
-fun BoxMiniHeader(countSoundFiles: Int) {
+fun BoxMiniHeader(NumbersForMiniHead: Int) {
     Box(
         modifier = Modifier
             .widthIn(min = 0.dp, max = 250.dp)
     ) {
-        val numbers = (1..countSoundFiles).toList()
+//        val numbers = (1..countSoundFiles).toList()
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(7)
         ) {
             var numberMiniHead: Int = 0
-            items(numbers.size) {
+//            val objRandomNumberFile = RandomNumberFile()
+//            val numbers = objRandomNumberFile.getNumbersForMiniHead()
+            items(NumbersForMiniHead) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     MiniHeadItem(numberMiniHead)
                 }
@@ -76,13 +87,13 @@ fun BoxMiniHeader(countSoundFiles: Int) {
 }
 
 @Composable
-fun HeadAvatar(countSoundFiles: Int) {
+fun HeadAvatar() {
     Image(
         modifier = Modifier
 
             .size(256.dp)
             .clickable {
-                clickHeadAvatar(countSoundFiles)
+//                clickHeadAvatar()
             },
         imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
         contentDescription = "head",
@@ -112,10 +123,11 @@ fun MiniHeadItem(numberMiniHead: Int) {
 
 }
 
-fun clickHeadAvatar(countSoundFiles: Int) {
-
-    val numberRandom = getRandom(countSoundFiles)
-    println("click clickHeadAvatar")
-    println(numberRandom)
-
-}
+//fun clickHeadAvatar() {
+//    val objRandomNumberFile = RandomNumberFile()
+//
+//    val numberRandom = objRandomNumberFile.getRandom()
+//    println("click clickHeadAvatar")
+//    println(numberRandom)
+//
+//}
