@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,8 @@ class MainActivity() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val viewModel = viewModels<MainViewModel>()
+
         val listSoundFile = assets.list("ogg")
         val countSoundFiles = listSoundFile?.count()?.toString()!!.toInt()
         println(countSoundFiles)
@@ -39,8 +42,36 @@ class MainActivity() : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                 ) {
                     Column {
-                        HeadAvatar(countSoundFiles)
-                        BoxMiniHeader(countSoundFiles)
+//                        HeadAvatar(countSoundFiles)
+                        Image(
+                            modifier = Modifier
+
+                                .size(256.dp)
+                                .clickable {
+                                    viewModel.value.clickHeadAvatar(countSoundFiles)
+                                },
+                            imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
+                            contentDescription = "head",
+                        )
+//                        BoxMiniHeader(countSoundFiles)
+                        Box(
+                            modifier = Modifier
+                                .widthIn(min = 0.dp, max = 250.dp)
+                        ) {
+                            val numbers = (1..countSoundFiles).toList()
+
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(7)
+                            ) {
+//                                var numberMiniHead: Int = 0
+                                items(numbers.size) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        MiniHeadItem(it)
+                                    }
+//                                    numberMiniHead += 1
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -48,55 +79,46 @@ class MainActivity() : ComponentActivity() {
     }
 }
 
-fun getRandom(countSoundFiles: Int): Int {
-    val randomValues = List(1) { Random.nextInt(0, countSoundFiles) }
-    return randomValues[0]
+//fun getRandom(countSoundFiles: Int): Int {
+//    val randomValues = List(1) { Random.nextInt(0, countSoundFiles) }
+//    return randomValues[0]
+//
+//}
 
-}
-@Composable
-fun BoxMiniHeader(countSoundFiles: Int) {
-    Box(
-        modifier = Modifier
-            .widthIn(min = 0.dp, max = 250.dp)
-    ) {
-        val numbers = (1..countSoundFiles).toList()
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(7)
-        ) {
-            var numberMiniHead: Int = 0
-            items(numbers.size) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    MiniHeadItem(numberMiniHead)
-                }
-                numberMiniHead += 1
-            }
-        }
-    }
-}
-
-@Composable
-fun HeadAvatar(countSoundFiles: Int) {
-    Image(
-        modifier = Modifier
-
-            .size(256.dp)
-            .clickable {
-                clickHeadAvatar(countSoundFiles)
-            },
-        imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
-        contentDescription = "head",
-    )
-}
-
-
-
-//@Preview(showBackground = true)
 //@Composable
-//fun DefaultPreview() {
-//    CalmSoulDevTheme {
-//        HeadAvatar(countSoundFiles)
+//fun BoxMiniHeader(countSoundFiles: Int) {
+//    Box(
+//        modifier = Modifier
+//            .widthIn(min = 0.dp, max = 250.dp)
+//    ) {
+//        val numbers = (1..countSoundFiles).toList()
+//
+//        LazyVerticalGrid(
+//            columns = GridCells.Fixed(7)
+//        ) {
+//            var numberMiniHead: Int = 0
+//            items(numbers.size) {
+//                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                    MiniHeadItem(numberMiniHead)
+//                }
+//                numberMiniHead += 1
+//            }
+//        }
 //    }
+//}
+
+//@Composable
+//fun HeadAvatar(countSoundFiles: Int) {
+//    Image(
+//        modifier = Modifier
+//
+//            .size(256.dp)
+//            .clickable {
+//                clickHeadAvatar(countSoundFiles)
+//            },
+//        imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
+//        contentDescription = "head",
+//    )
 //}
 
 @Composable
@@ -112,10 +134,10 @@ fun MiniHeadItem(numberMiniHead: Int) {
 
 }
 
-fun clickHeadAvatar(countSoundFiles: Int) {
-
-    val numberRandom = getRandom(countSoundFiles)
-    println("click clickHeadAvatar")
-    println(numberRandom)
-
-}
+//fun clickHeadAvatar(countSoundFiles: Int) {
+//
+//    val numberRandom = getRandom(countSoundFiles)
+//    println("click clickHeadAvatar")
+//    println(numberRandom)
+//
+//}
