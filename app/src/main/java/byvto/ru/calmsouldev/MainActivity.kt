@@ -28,15 +28,16 @@ class MainActivity() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModel = viewModels<MainViewModel>()
+        val viewModel by viewModels<MainViewModel>()
+
+        //TODO надо один раз наполнить каким-то образом базу файлами
 
         val listSoundFile = assets.list("ogg")
         val countSoundFiles = listSoundFile?.count()?.toString()!!.toInt()
         println(countSoundFiles)
-//        getRandom(countSoundFiles)
+
         setContent {
             CalmSoulDevTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background,
@@ -48,27 +49,33 @@ class MainActivity() : ComponentActivity() {
 
                                 .size(256.dp)
                                 .clickable {
-                                    viewModel.value.clickHeadAvatar(countSoundFiles)
+                                    viewModel.clickHeadAvatar(countSoundFiles)
                                 },
                             imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
                             contentDescription = "head",
                         )
-//                        BoxMiniHeader(countSoundFiles)
                         Box(
                             modifier = Modifier
                                 .widthIn(min = 0.dp, max = 250.dp)
                         ) {
-                            val numbers = (1..countSoundFiles).toList()
-
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(7)
                             ) {
-//                                var numberMiniHead: Int = 0
-                                items(numbers.size) {
-                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        MiniHeadItem(it)
-                                    }
-//                                    numberMiniHead += 1
+                                items(viewModel.fileList.size) {
+                                    println(viewModel.fileList[it].fileName)
+                                    Image(
+                                        modifier = Modifier
+                                            .size(36.dp)
+                                            .clickable {
+                                                //TODO запустить воспроизведение
+                                            },
+                                        imageVector = if (viewModel.fileList[it].finished) {
+                                            ImageVector.vectorResource(id = R.drawable.tollev_green_v2)
+                                        } else {
+                                            ImageVector.vectorResource(id = R.drawable.tollev_white_v2)
+                                        },
+                                        contentDescription = "item",
+                                    )
                                 }
                             }
                         }
@@ -78,66 +85,3 @@ class MainActivity() : ComponentActivity() {
         }
     }
 }
-
-//fun getRandom(countSoundFiles: Int): Int {
-//    val randomValues = List(1) { Random.nextInt(0, countSoundFiles) }
-//    return randomValues[0]
-//
-//}
-
-//@Composable
-//fun BoxMiniHeader(countSoundFiles: Int) {
-//    Box(
-//        modifier = Modifier
-//            .widthIn(min = 0.dp, max = 250.dp)
-//    ) {
-//        val numbers = (1..countSoundFiles).toList()
-//
-//        LazyVerticalGrid(
-//            columns = GridCells.Fixed(7)
-//        ) {
-//            var numberMiniHead: Int = 0
-//            items(numbers.size) {
-//                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                    MiniHeadItem(numberMiniHead)
-//                }
-//                numberMiniHead += 1
-//            }
-//        }
-//    }
-//}
-
-//@Composable
-//fun HeadAvatar(countSoundFiles: Int) {
-//    Image(
-//        modifier = Modifier
-//
-//            .size(256.dp)
-//            .clickable {
-//                clickHeadAvatar(countSoundFiles)
-//            },
-//        imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
-//        contentDescription = "head",
-//    )
-//}
-
-@Composable
-fun MiniHeadItem(numberMiniHead: Int) {
-    Image(
-        modifier = Modifier
-            .size(36.dp),
-        imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
-        contentDescription = "item",
-
-        )
-    println(numberMiniHead)
-
-}
-
-//fun clickHeadAvatar(countSoundFiles: Int) {
-//
-//    val numberRandom = getRandom(countSoundFiles)
-//    println("click clickHeadAvatar")
-//    println(numberRandom)
-//
-//}
