@@ -16,4 +16,7 @@ interface FilesDao {
 
     @Query("SELECT * FROM filesentity WHERE id IS :id")
     suspend fun getById(id: Int): FilesEntity
+
+    @Query("UPDATE filesentity SET finished = :flag WHERE id IS :id")
+    suspend fun finishedById(id: Int, flag: Boolean)
 }
