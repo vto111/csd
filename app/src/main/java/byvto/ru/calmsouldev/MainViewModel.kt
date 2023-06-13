@@ -1,10 +1,13 @@
 package byvto.ru.calmsouldev
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import byvto.ru.calmsouldev.data.local.FilesDao
+import androidx.lifecycle.viewModelScope
 import byvto.ru.calmsouldev.data.local.FilesDatabase
-import byvto.ru.calmsouldev.domain.model.File
+import byvto.ru.calmsouldev.data.local.FilesEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -13,13 +16,36 @@ class MainViewModel @Inject constructor(
     private val db: FilesDatabase
 ): ViewModel() {
 
-    // переменнаятолько для примера
-    val fileList = listOf(1,2,3,4,5)
+    var fileList = mutableStateOf(listOf<FilesEntity>())
+
+    init {
+        getAll()
+    }
 
     fun getAll() {
-        val data = db.dao.getAllFiles()
-        //TODO функция должна возвращать список файлов из таблицы
+        //TODO функция должна возвращать список всех файлов из таблицы
+        viewModelScope.launch {
+            fileList.value = db.dao.getAll()
+            println(fileList.value)
+        }
     }
+
+    fun initDb() {
+        //TODO прочитать имена всех файлов и записать в БД
+        viewModelScope.launch {
+            for (i in 0..15) { // надо придумать как правильно, тут тупо перебор
+                db.dao.insertFile(
+                    FilesEntity(
+                        id = i,
+                        fileName = "$i.ogg",
+                        finished = false
+                    )
+                )
+            }
+        }
+    }
+
+
 
     private fun getRandom(countSoundFiles: Int): Int {
         val randomValues = List(1) { Random.nextInt(0, countSoundFiles) }

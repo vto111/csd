@@ -9,11 +9,11 @@ import androidx.room.Query
 interface FilesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFile(id: FilesEntity)
+    suspend fun insertFile(id: FilesEntity)
 
     @Query("SELECT * FROM filesentity")
-    fun getAllFiles(): List<FilesEntity>
+    suspend fun getAll(): List<FilesEntity>
 
     @Query("SELECT * FROM filesentity WHERE id IS :id")
-    fun getFile(id: Int): FilesEntity
+    suspend fun getById(id: Int): FilesEntity
 }

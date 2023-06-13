@@ -8,11 +8,14 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -22,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import byvto.ru.calmsouldev.ui.theme.CalmSoulDevTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 @AndroidEntryPoint
@@ -34,7 +38,7 @@ class MainActivity() : ComponentActivity() {
 
         val listSoundFile = assets.list("ogg")
         val countSoundFiles = listSoundFile?.count()?.toString()!!.toInt()
-        println(countSoundFiles)
+//        println(countSoundFiles)
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -49,6 +53,13 @@ class MainActivity() : ComponentActivity() {
 fun MainScreen(
     viewModel: MainViewModel
 ) {
+
+    val fileList = viewModel.fileList
+
+//    LaunchedEffect(true) {
+//        viewModel.getAll()
+//    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background,
@@ -65,23 +76,20 @@ fun MainScreen(
                 contentDescription = "head",
             )
             Box(
-                modifier = Modifier
-                    .widthIn(min = 0.dp, max = 250.dp)
+                modifier = Modifier.fillMaxSize()
             ) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(7)
                 ) {
-//                    items(viewModel.getAll.size) {
-                    items(viewModel.fileList.size) {
-//                        println(viewModel.getAll[it].fileName)
+                    items(fileList.value.size) {
+                        println(fileList.value[it])
                         Image(
                             modifier = Modifier
                                 .size(36.dp)
                                 .clickable {
                                     //TODO запустить воспроизведение
                                 },
-//                            imageVector = if (viewModel.getAll[it].finished) {
-                            imageVector = if (true) {
+                            imageVector = if (fileList.value[it].finished) {
                                 ImageVector.vectorResource(id = R.drawable.tollev_green_v2)
                             } else {
                                 ImageVector.vectorResource(id = R.drawable.tollev_white_v2)
@@ -91,6 +99,7 @@ fun MainScreen(
                     }
                 }
             }
+
         }
     }
 }
