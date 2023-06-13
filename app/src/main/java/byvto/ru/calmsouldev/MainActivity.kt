@@ -19,13 +19,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import byvto.ru.calmsouldev.ui.theme.CalmSoulDevTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.random.Random
 
-
+@AndroidEntryPoint
 class MainActivity() : ComponentActivity() {
-
-    private val viewModel by viewModels<MainViewModel>()
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +39,7 @@ class MainActivity() : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CalmSoulDevTheme {
-                MainScreen(viewModel)
+                MainScreen(viewModel = hiltViewModel())
             }
         }
     }
@@ -71,16 +71,17 @@ fun MainScreen(
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(7)
                 ) {
+//                    items(viewModel.getAll.size) {
                     items(viewModel.fileList.size) {
-//                        println(viewModel.fileList[it].fileName)
+//                        println(viewModel.getAll[it].fileName)
                         Image(
                             modifier = Modifier
                                 .size(36.dp)
                                 .clickable {
                                     //TODO запустить воспроизведение
                                 },
+//                            imageVector = if (viewModel.getAll[it].finished) {
                             imageVector = if (true) {
-//                            imageVector = if (viewModel.fileList[it].finished) {
                                 ImageVector.vectorResource(id = R.drawable.tollev_green_v2)
                             } else {
                                 ImageVector.vectorResource(id = R.drawable.tollev_white_v2)
