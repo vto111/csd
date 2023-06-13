@@ -5,10 +5,11 @@ import byvto.ru.calmsouldev.data.local.FilesDao
 import kotlin.random.Random
 
 class MainViewModel(
-    private val dao: FilesDao
+//    private val dao: FilesDao
 ): ViewModel() {
 
-    val fileList = dao.getAllFiles()
+//    val fileList = dao.getAllFiles()
+    val fileList = listOf(1,2,3,4,5)
 
     private fun getRandom(countSoundFiles: Int): Int {
         val randomValues = List(1) { Random.nextInt(0, countSoundFiles) }

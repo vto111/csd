@@ -24,11 +24,11 @@ import kotlin.random.Random
 
 
 class MainActivity() : ComponentActivity() {
+
+    private val viewModel by viewModels<MainViewModel>()
+
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val viewModel by viewModels<MainViewModel>()
 
         //TODO надо один раз наполнить каким-то образом базу файлами
 
@@ -36,49 +36,57 @@ class MainActivity() : ComponentActivity() {
         val countSoundFiles = listSoundFile?.count()?.toString()!!.toInt()
         println(countSoundFiles)
 
+        super.onCreate(savedInstanceState)
         setContent {
             CalmSoulDevTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background,
+                MainScreen(viewModel)
+            }
+        }
+    }
+}
+
+@Composable
+fun MainScreen(
+    viewModel: MainViewModel
+) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colors.background,
+    ) {
+        Column {
+            Image(
+                modifier = Modifier
+
+                    .size(256.dp)
+                    .clickable {
+//                        viewModel.clickHeadAvatar(countSoundFiles)
+                    },
+                imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
+                contentDescription = "head",
+            )
+            Box(
+                modifier = Modifier
+                    .widthIn(min = 0.dp, max = 250.dp)
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(7)
                 ) {
-                    Column {
-//                        HeadAvatar(countSoundFiles)
+                    items(viewModel.fileList.size) {
+//                        println(viewModel.fileList[it].fileName)
                         Image(
                             modifier = Modifier
-
-                                .size(256.dp)
+                                .size(36.dp)
                                 .clickable {
-                                    viewModel.clickHeadAvatar(countSoundFiles)
+                                    //TODO запустить воспроизведение
                                 },
-                            imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
-                            contentDescription = "head",
+                            imageVector = if (true) {
+//                            imageVector = if (viewModel.fileList[it].finished) {
+                                ImageVector.vectorResource(id = R.drawable.tollev_green_v2)
+                            } else {
+                                ImageVector.vectorResource(id = R.drawable.tollev_white_v2)
+                            },
+                            contentDescription = "item",
                         )
-                        Box(
-                            modifier = Modifier
-                                .widthIn(min = 0.dp, max = 250.dp)
-                        ) {
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(7)
-                            ) {
-                                items(viewModel.fileList.size) {
-                                    println(viewModel.fileList[it].fileName)
-                                    Image(
-                                        modifier = Modifier
-                                            .size(36.dp)
-                                            .clickable {
-                                                //TODO запустить воспроизведение
-                                            },
-                                        imageVector = if (viewModel.fileList[it].finished) {
-                                            ImageVector.vectorResource(id = R.drawable.tollev_green_v2)
-                                        } else {
-                                            ImageVector.vectorResource(id = R.drawable.tollev_white_v2)
-                                        },
-                                        contentDescription = "item",
-                                    )
-                                }
-                            }
-                        }
                     }
                 }
             }
