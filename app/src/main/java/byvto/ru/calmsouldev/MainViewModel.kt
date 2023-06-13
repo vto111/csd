@@ -8,7 +8,6 @@ import byvto.ru.calmsouldev.data.local.FilesEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -21,7 +20,21 @@ class MainViewModel @Inject constructor(
         getAll()
     }
 
-    fun getAll() {
+    fun onEvent(event: MainEvent) {
+        when(event) {
+            is MainEvent.SmallHeadClick -> {
+                //TODO запускать плеер с нужным треком
+                toggleFinished(event.id)
+            }
+            MainEvent.BigHeadClick -> {
+                //TODO запускать рандомный трек
+                val rnd = (1..fileList.value.size).random()
+                toggleFinished(rnd)
+            }
+        }
+    }
+
+    private fun getAll() {
         //TODO функция должна возвращать список всех файлов из таблицы
         viewModelScope.launch {
             fileList.value = db.dao.getAll()
@@ -61,10 +74,5 @@ class MainViewModel @Inject constructor(
                 )
             }
         }
-    }
-
-    fun clickHeadAvatar() {
-        val rnd = (1..fileList.value.size).random()
-        println(rnd)
     }
 }
