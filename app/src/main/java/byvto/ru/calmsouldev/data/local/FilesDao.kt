@@ -19,4 +19,7 @@ interface FilesDao {
 
     @Query("UPDATE filesentity SET finished = :flag WHERE id IS :id")
     suspend fun finishedById(id: Int, flag: Boolean)
+
+    @Query("SELECT EXISTS(SELECT * FROM filesentity)")
+    suspend fun checkNewDevice(): Boolean
 }
