@@ -1,5 +1,7 @@
 package byvto.ru.calmsouldev
 
+import android.content.Context
+import android.media.MediaPlayer
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -7,8 +9,6 @@ import androidx.lifecycle.viewModelScope
 import byvto.ru.calmsouldev.data.local.FilesDatabase
 import byvto.ru.calmsouldev.data.local.FilesEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -20,6 +20,7 @@ class MainViewModel @Inject constructor(
 
     val playList = mutableStateOf(listOf<FilesEntity>())
     val currentTrack = mutableStateOf(FilesEntity(0, "", false))
+    val player = MediaPlayer()
 
     init {
         if (!checkDb()) initDb()
@@ -27,6 +28,14 @@ class MainViewModel @Inject constructor(
         getAll()
     }
 
+    fun MyComposable(context: Context, fileName: String) {
+        val afd = context.assets.openFd("ogg/$fileName")
+        player.stop()
+        player.reset()
+        player.setDataSource(afd.fileDescriptor,afd.startOffset,afd.length)
+        player.prepare()
+        player.start()
+    }
     fun onEvent(event: MainEvent) {
         when(event) {
             is MainEvent.SmallHeadClick -> {

@@ -21,22 +21,20 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import byvto.ru.calmsouldev.data.local.FilesEntity
 import byvto.ru.calmsouldev.ui.theme.CalmSoulDevTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -62,6 +60,7 @@ fun MainScreen(
     val playList = viewModel.playList.value
     val currentTrack = viewModel.currentTrack.value
 
+
     val scope = rememberCoroutineScope()
     val playerState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Collapsed,
@@ -69,6 +68,7 @@ fun MainScreen(
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = playerState
     )
+    val context = LocalContext.current
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -116,6 +116,9 @@ fun MainScreen(
 //                    .size(256.dp)
                     .fillMaxWidth()
                     .clickable {
+                        if(currentTrack.fileName != ""){
+                            viewModel.MyComposable(context, currentTrack.fileName)
+                        }
                         viewModel.onEvent(MainEvent.BigHeadClick)
                         scope.launch { playerState.expand() }
                     },
@@ -139,6 +142,7 @@ fun MainScreen(
                                 modifier = Modifier
 //                                .size(36.dp)
                                     .clickable {
+                                        viewModel.MyComposable(context, playList[it].fileName)
                                         //TODO запустить воспроизведение
                                         viewModel.onEvent(MainEvent.SmallHeadClick(playList[it].id))
                                         scope.launch { playerState.expand() }
