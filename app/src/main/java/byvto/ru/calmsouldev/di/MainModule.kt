@@ -1,8 +1,7 @@
-package byvto.ru.calmsouldev
+package byvto.ru.calmsouldev.di
 
 import android.app.Application
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import byvto.ru.calmsouldev.data.local.FilesDatabase
 import dagger.Module
 import dagger.Provides
