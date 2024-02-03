@@ -165,7 +165,6 @@ fun MainScreen(
                     Box(
                         modifier = Modifier
                             .clickable {
-                                //TODO запустить воспроизведение
                                 viewModel.onEvent(MainEvent.SmallHeadClick(playList[it].id))
                                 scope.launch { bottomState.expand() }
                             }

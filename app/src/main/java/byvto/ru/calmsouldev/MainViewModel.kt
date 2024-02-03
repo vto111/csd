@@ -45,13 +45,11 @@ class MainViewModel @Inject constructor(
     fun onEvent(event: MainEvent) {
         when(event) {
             is MainEvent.SmallHeadClick -> {
-                //TODO запускать плеер с нужным треком
                 viewModelScope.launch {
                     getById(event.id)
                 }
             }
             MainEvent.BigHeadClick -> {
-                //TODO запускать рандомный трек
                 val rnd = (1..playList.value.size).random()
                 viewModelScope.launch {
                     getById(rnd)
@@ -70,18 +68,14 @@ class MainViewModel @Inject constructor(
         //TODO инит базы на новом устройстве!
         // надо придумать как правильно, тут тупо перебор!!!
         Log.i("initDb", "New Device, creating index!")
-        val list = context.assets.list("ogg")
-        if (list != null) {
-            for (f in 0 .. list.size) {
-//                println(list[f])
-                db.dao.insertFile(
-                    FilesEntity(
-                        id = f,
-                        fileName = list[f],
-                        finished = false
-                    )
+        context.assets.list("ogg")?.forEachIndexed { index, file ->
+            db.dao.insertFile(
+                FilesEntity(
+                    id = index,
+                    fileName = file,
+                    finished = false
                 )
-            }
+            )
         }
     }
 
@@ -139,17 +133,5 @@ class MainViewModel @Inject constructor(
             player.play()
             _playerState.value = _playerState.value.copy(isPlaying = true)
         }
-//        if (_playerState.value.isPlaying) {
-//            Log.e("PLAYER", "PAUSE pressed")
-////            player.release()
-//            player.pause()
-//            _playerState.value = _playerState.value.copy(isPlaying = false)
-//        } else {
-//            Log.e("PLAYER", "PLAY pressed")
-////            player.setMediaItem(MediaItem.fromUri(uri))
-////            player.prepare()
-//            player.play()
-//            _playerState.value = _playerState.value.copy(isPlaying = true)
-//        }
     }
 }
