@@ -9,25 +9,31 @@ import androidx.lifecycle.viewModelScope
 import byvto.ru.calmsouldev.data.local.FilesDatabase
 import byvto.ru.calmsouldev.data.local.FilesEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val db: FilesDatabase
+    private val db: FilesDatabase,
+    @ApplicationContext context: Context
 ): ViewModel() {
 
     val playList = mutableStateOf(listOf<FilesEntity>())
     val currentTrack = mutableStateOf(FilesEntity(0, "", false))
-    val player = MediaPlayer()
+    private val player = MediaPlayer()
 
     init {
-        if (!checkDb()) initDb()
+//        context.deleteDatabase("file_db")
+        if (!checkDb()) initDb(context = context)
         //TODO bug: при первом запуске читается только одна голова...
         getAll()
     }
 
+    fun getListFiles(context: Context): Array<out String>? {
+        return context.assets.list("ogg")
+    }
     fun MyComposable(context: Context, fileName: String) {
         val afd = context.assets.openFd("ogg/$fileName")
         player.stop()
@@ -88,21 +94,20 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun initDb() = runBlocking {
+    private fun initDb(context: Context) = runBlocking {
         //TODO инит базы на новом устройстве!
         // надо придумать как правильно, тут тупо перебор!!!
+
         Log.i("initDb", "New Device, creating index!")
-//        viewModelScope.launch {
-            for (i in 0..15) {
-                Log.i("initDb id", i.toString())
-                db.dao.insertFile(
-                    FilesEntity(
-                        id = i,
-                        fileName = "$i.ogg",
-                        finished = false
-                    )
+        val listFilesOgg = getListFiles(context)
+        listFilesOgg?.forEachIndexed{ i, s ->
+            db.dao.insertFile(
+                FilesEntity(
+                    id = i,
+                    fileName = "$s",
+                    finished = false
                 )
-            }
-//        }
+            )
+        }
     }
 }
