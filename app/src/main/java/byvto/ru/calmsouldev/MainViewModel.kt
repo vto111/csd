@@ -28,14 +28,16 @@ class MainViewModel @Inject constructor(
 ): ViewModel() {
 
     val playList = mutableStateOf(listOf<Files>())
-//    val playList = mutableStateOf(listOf<FilesEntity>())
-//    private val _playList = MutableStateFlow(listOf<FilesEntity>())
-//    val playList = _playList.asStateFlow()
 
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState = _playerState.asStateFlow()
 
-    private val player = ExoPlayer.Builder(context).build()
+    val player = ExoPlayer.Builder(context)
+        .build()
+//        .apply {
+//            playWhenReady = true
+//            prepare()
+//        }
 
     init {
         if (!checkDb()) initDb(context = context)

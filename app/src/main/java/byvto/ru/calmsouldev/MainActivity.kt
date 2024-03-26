@@ -22,6 +22,7 @@ import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
@@ -43,7 +44,9 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -117,25 +120,8 @@ fun MainScreen(
     val playList = viewModel.playList.value
     val playerState by viewModel.playerState.collectAsState()
 
-    val scope = rememberCoroutineScope()
-    val bottomState = rememberBottomSheetState(
-        initialValue = BottomSheetValue.Collapsed,
-    )
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = bottomState
-    )
+    Scaffold(
 
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
-        sheetShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-        sheetContent = {
-            Player(
-                state = playerState,
-                playPauseToggle = { viewModel.onEvent(MainEvent.TogglePlayPause) },
-                hideClicked = { scope.launch { bottomState.collapse() } }
-            )
-        },
-        sheetPeekHeight = 10.dp,
     ) {
         Column(
             modifier = Modifier
@@ -154,7 +140,6 @@ fun MainScreen(
                     .border(4.dp, Color.Gray, CircleShape)
                     .clickable {
                         viewModel.onEvent(MainEvent.BigHeadClick)
-                        scope.launch { bottomState.expand() }
                     },
             )
             LazyVerticalGrid(
@@ -166,7 +151,6 @@ fun MainScreen(
                         modifier = Modifier
                             .clickable {
                                 viewModel.onEvent(MainEvent.SmallHeadClick(playList[it].id))
-                                scope.launch { bottomState.expand() }
                             }
 //                                .fillMaxSize()
                             .padding(4.dp),
@@ -200,6 +184,19 @@ fun MainScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            AndroidView(
+                factory = { context ->
+                    PlayerView(context).apply {
+                        player = viewModel.player
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
         }
     }
 }
