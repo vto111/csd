@@ -7,10 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.Player.Listener
 import androidx.media3.exoplayer.ExoPlayer
-import byvto.ru.calmsouldev.data.local.FilesDatabase
-import byvto.ru.calmsouldev.data.local.FilesEntity
-import byvto.ru.calmsouldev.model.Files
+import byvto.ru.calmsouldev.data.local.TracksDatabase
+import byvto.ru.calmsouldev.data.local.TrackEntity
+import byvto.ru.calmsouldev.model.Track
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,21 +25,33 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val db: FilesDatabase,
+    private val db: TracksDatabase,
     @ApplicationContext context: Context
 ): ViewModel() {
 
-    val playList = mutableStateOf(listOf<Files>())
+    val playList = mutableStateOf(listOf<Track>())
 
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState = _playerState.asStateFlow()
 
     val player = ExoPlayer.Builder(context)
         .build()
-//        .apply {
-//            playWhenReady = true
-//            prepare()
-//        }
+        .apply {
+            playWhenReady = true
+            prepare()
+//            addListener(
+//                object : Listener {
+//                    override fun onPlaybackStateChanged(playbackState: Int) {
+//                        when (playbackState) {
+//                            Player.STATE_ENDED -> {
+//                                playerState.value.id?.let { setFinished(it) }
+//                            }
+//                            else -> Unit
+//                        }
+//                    }
+//                }
+//            )
+        }
 
     init {
         if (!checkDb()) initDb(context = context)
@@ -46,36 +60,53 @@ class MainViewModel @Inject constructor(
 
     fun onEvent(event: MainEvent) {
         when(event) {
-            is MainEvent.SmallHeadClick -> {
-                viewModelScope.launch {
-                    getById(event.id)
+            is MainEvent.BigHeadClick -> {
+                if (playerState.value.isPlaying) {
+                    player.stop()
+                    _playerState.update {
+                        it.copy(
+                            isPlaying = false
+                        )
+                    }
+                } else {
+                    val rnd = (1..playList.value.size).random()
+                    viewModelScope.launch {
+                        getById(rnd)
+                    }
+                    _playerState.update {
+                        it.copy(
+                            isPlaying = true
+                        )
+                    }
                 }
             }
-            MainEvent.BigHeadClick -> {
-                val rnd = (1..playList.value.size).random()
-                viewModelScope.launch {
-                    getById(rnd)
-                }
-            }
-            is MainEvent.ToggleFinished -> {
-                toggleFinished(event.id)
-            }
-            is MainEvent.TogglePlayPause -> {
-                playPauseToggle()
-            }
+//            is MainEvent.SmallHeadClick -> {
+//                viewModelScope.launch {
+//                    getById(event.id)
+//                }
+//            }
+//            is MainEvent.ToggleFinished -> {
+//                toggleFinished(event.id)
+//            }
+//            is MainEvent.TogglePlayPause -> {
+//                playPauseToggle()
+//            }
         }
     }
 
     private fun initDb(context: Context) = runBlocking {
         //TODO инит базы на новом устройстве!
         // надо придумать как правильно, тут тупо перебор!!!
+        // стоит перенести в SplashScreen.
         Log.i("initDb", "New Device, creating index!")
         context.assets.list("ogg")?.forEachIndexed { index, file ->
-            db.dao.insertFile(
-                FilesEntity(
+            Log.i(index.toString(), file)
+            db.dao.insertTrack(
+                TrackEntity(
                     id = index,
                     fileName = file,
-                    finished = false
+                    isFinished = false,
+                    order = 0
                 )
             )
         }
@@ -87,7 +118,7 @@ class MainViewModel @Inject constructor(
 
     private fun getAll() {
         viewModelScope.launch {
-            playList.value = db.dao.getAll().map { it.toFiles() }
+            playList.value = db.dao.getAll().map { it.toTrack() }
 //            Log.i("getAll", playList.value.toString())
         }
     }
@@ -101,7 +132,7 @@ class MainViewModel @Inject constructor(
             )
         }
         val uri = Uri.fromFile(File("android_asset/ogg/${playerState.value.fileName}"))
-        println("URI: $uri")
+//        println("URI: $uri")
         player.setMediaItem(MediaItem.fromUri(uri))
         player.prepare()
     }
@@ -112,28 +143,28 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun toggleFinished(id: Int) {
-        // должна вызываться когда трек заканчивается
-        viewModelScope.launch {
-            val entry = db.dao.getById(id)
-            if (entry.finished) {
-                db.dao.finishedById(id, false)
-            } else {
-                db.dao.finishedById(id, true)
-            }
-            //TODO тут что-то не правильно, надо переделать:
-//            getAll()
-//            getById(id)
-        }
-    }
+//    private fun toggleFinished(id: Int) {
+//        // должна вызываться когда трек заканчивается
+//        viewModelScope.launch {
+//            val entry = db.dao.getById(id)
+//            if (entry.isFinished) {
+//                db.dao.finishedById(id, false)
+//            } else {
+//                db.dao.finishedById(id, true)
+//            }
+//            //TODO тут что-то не правильно, надо переделать:
+////            getAll()
+////            getById(id)
+//        }
+//    }
 
-    private fun playPauseToggle() {
-        if (player.isPlaying) {
-            player.pause()
-            _playerState.value = _playerState.value.copy(isPlaying = false)
-        } else {
-            player.play()
-            _playerState.value = _playerState.value.copy(isPlaying = true)
-        }
-    }
+//    private fun playPauseToggle() {
+//        if (player.isPlaying) {
+//            player.pause()
+//            _playerState.value = _playerState.value.copy(isPlaying = false)
+//        } else {
+//            player.play()
+//            _playerState.value = _playerState.value.copy(isPlaying = true)
+//        }
+//    }
 }

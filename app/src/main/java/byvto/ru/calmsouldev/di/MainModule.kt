@@ -2,7 +2,7 @@ package byvto.ru.calmsouldev.di
 
 import android.app.Application
 import androidx.room.Room
-import byvto.ru.calmsouldev.data.local.FilesDatabase
+import byvto.ru.calmsouldev.data.local.TracksDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,9 +15,9 @@ class MainModule {
 
     @Provides
     @Singleton
-    fun provideDb(app: Application): FilesDatabase {
+    fun provideDb(app: Application): TracksDatabase {
         return Room.databaseBuilder(
-            app, FilesDatabase::class.java, "file_db"
+            app, TracksDatabase::class.java, "tracks_db"
         ).build()
     }
 }

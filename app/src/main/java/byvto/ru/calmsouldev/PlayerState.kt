@@ -1,7 +1,7 @@
 package byvto.ru.calmsouldev
 
 data class PlayerState(
-    val id: Int = 0,
+    val id: Int? = null,
     val isPlaying: Boolean = false,
     val fileName: String = ""
 )

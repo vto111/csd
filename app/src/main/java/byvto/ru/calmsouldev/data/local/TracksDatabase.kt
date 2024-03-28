@@ -4,10 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [FilesEntity::class],
+    entities = [TrackEntity::class],
     version = 1
 )
-abstract class FilesDatabase: RoomDatabase() {
+abstract class TracksDatabase: RoomDatabase() {
 
-    abstract val dao: FilesDao
+    abstract val dao: TracksDao
 }

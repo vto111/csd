@@ -1,7 +1,8 @@
 package byvto.ru.calmsouldev.model
 
-data class Files(
+data class Track(
     val id: Int,
     val fileName: String,
-    val finished: Boolean
+    val isFinished: Boolean,
+    val order: Int
 )

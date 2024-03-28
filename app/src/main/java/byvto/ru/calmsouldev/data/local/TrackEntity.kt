@@ -2,22 +2,24 @@ package byvto.ru.calmsouldev.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import byvto.ru.calmsouldev.model.Files
+import byvto.ru.calmsouldev.model.Track
 
 @Entity
-data class FilesEntity(
+data class TrackEntity(
 
     @PrimaryKey(autoGenerate = false)
     val id: Int,
     val fileName: String,
-    val finished: Boolean
+    val isFinished: Boolean,
+    val order: Int
     // что еще может быть нужно в таблице?
 ) {
-    fun toFiles() : Files {
-        return Files(
+    fun toTrack() : Track {
+        return Track(
             id = id,
             fileName = fileName,
-            finished = finished
+            isFinished = isFinished,
+            order = order
         )
     }
 }
