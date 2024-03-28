@@ -29,7 +29,8 @@ class MainViewModel @Inject constructor(
     @ApplicationContext context: Context
 ): ViewModel() {
 
-    val playList = mutableStateOf(listOf<Track>())
+    private val _playList = MutableStateFlow(listOf<Track>())
+    val playList = _playList.asStateFlow()
 
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState = _playerState.asStateFlow()
@@ -39,18 +40,18 @@ class MainViewModel @Inject constructor(
         .apply {
             playWhenReady = true
             prepare()
-//            addListener(
-//                object : Listener {
-//                    override fun onPlaybackStateChanged(playbackState: Int) {
-//                        when (playbackState) {
-//                            Player.STATE_ENDED -> {
-//                                playerState.value.id?.let { setFinished(it) }
-//                            }
-//                            else -> Unit
-//                        }
-//                    }
-//                }
-//            )
+            addListener(
+                object : Listener {
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        when (playbackState) {
+                            Player.STATE_ENDED -> {
+                                playerState.value.id?.let { setFinished(it) }
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
+            )
         }
 
     init {
@@ -80,17 +81,6 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
-//            is MainEvent.SmallHeadClick -> {
-//                viewModelScope.launch {
-//                    getById(event.id)
-//                }
-//            }
-//            is MainEvent.ToggleFinished -> {
-//                toggleFinished(event.id)
-//            }
-//            is MainEvent.TogglePlayPause -> {
-//                playPauseToggle()
-//            }
         }
     }
 
@@ -118,8 +108,7 @@ class MainViewModel @Inject constructor(
 
     private fun getAll() {
         viewModelScope.launch {
-            playList.value = db.dao.getAll().map { it.toTrack() }
-//            Log.i("getAll", playList.value.toString())
+            _playList.value = db.dao.getAll().map { it.toTrack() }
         }
     }
 
@@ -140,31 +129,7 @@ class MainViewModel @Inject constructor(
     fun setFinished(id: Int) {
         viewModelScope.launch {
             db.dao.finishedById(id, true)
+            getAll()    //TODO продумать как переделать
         }
     }
-
-//    private fun toggleFinished(id: Int) {
-//        // должна вызываться когда трек заканчивается
-//        viewModelScope.launch {
-//            val entry = db.dao.getById(id)
-//            if (entry.isFinished) {
-//                db.dao.finishedById(id, false)
-//            } else {
-//                db.dao.finishedById(id, true)
-//            }
-//            //TODO тут что-то не правильно, надо переделать:
-////            getAll()
-////            getById(id)
-//        }
-//    }
-
-//    private fun playPauseToggle() {
-//        if (player.isPlaying) {
-//            player.pause()
-//            _playerState.value = _playerState.value.copy(isPlaying = false)
-//        } else {
-//            player.play()
-//            _playerState.value = _playerState.value.copy(isPlaying = true)
-//        }
-//    }
 }

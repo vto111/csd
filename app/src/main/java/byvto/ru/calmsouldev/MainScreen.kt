@@ -41,7 +41,7 @@ fun MainScreen(
     viewModel: MainViewModel
 ) {
 
-    val playList = viewModel.playList.value
+    val playList by viewModel.playList.collectAsState()
     val playerState by viewModel.playerState.collectAsState()
 
     Scaffold() {
@@ -81,16 +81,16 @@ fun MainScreen(
                             contentDescription = "item",
                             contentScale = ContentScale.FillWidth
                         )
-                        Text(
-                            text = playList[it].id.toString(),
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
-                            textAlign = TextAlign.Center,
-//                                textAlign = TextAlign.End,
-                            color = Color.Black
-                        )
+//                        Text(
+//                            text = playList[it].id.toString(),
+//                            fontWeight = FontWeight.Bold,
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .padding(8.dp),
+//                            textAlign = TextAlign.Center,
+////                                textAlign = TextAlign.End,
+//                            color = Color.Black
+//                        )
                     }
                 }
             }
