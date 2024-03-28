@@ -3,7 +3,6 @@ package byvto.ru.calmsouldev
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
@@ -35,7 +34,7 @@ class MainViewModel @Inject constructor(
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState = _playerState.asStateFlow()
 
-    val player = ExoPlayer.Builder(context)
+    private val player = ExoPlayer.Builder(context)
         .build()
         .apply {
             playWhenReady = true
@@ -61,26 +60,7 @@ class MainViewModel @Inject constructor(
 
     fun onEvent(event: MainEvent) {
         when(event) {
-            is MainEvent.BigHeadClick -> {
-                if (playerState.value.isPlaying) {
-                    player.stop()
-                    _playerState.update {
-                        it.copy(
-                            isPlaying = false
-                        )
-                    }
-                } else {
-                    val rnd = (1..playList.value.size).random()
-                    viewModelScope.launch {
-                        getById(rnd)
-                    }
-                    _playerState.update {
-                        it.copy(
-                            isPlaying = true
-                        )
-                    }
-                }
-            }
+            is MainEvent.BigHeadClick -> bigHeadClick()
         }
     }
 
@@ -112,6 +92,30 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun bigHeadClick() {
+        if (playerState.value.isPlaying) {
+            player.stop()
+            _playerState.update {
+                it.copy(
+                    isPlaying = false
+                )
+            }
+        } else {
+            val rnd = playList.value.filter {
+                !it.isFinished
+            }.map { it.id }.random()
+//            val rnd = (1..playList.value.size).random()
+            viewModelScope.launch {
+                getById(rnd)
+            }
+            _playerState.update {
+                it.copy(
+                    isPlaying = true
+                )
+            }
+        }
+    }
+
     private suspend fun getById(id: Int) {
         val result = db.dao.getById(id)
         _playerState.update {
@@ -129,6 +133,11 @@ class MainViewModel @Inject constructor(
     fun setFinished(id: Int) {
         viewModelScope.launch {
             db.dao.finishedById(id, true)
+            _playerState.update {
+                it.copy(
+                    isPlaying = false
+                )
+            }
             getAll()    //TODO продумать как переделать
         }
     }
