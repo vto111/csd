@@ -5,4 +5,5 @@ sealed interface MainEvent {
     data object BigHeadClick : MainEvent
 //    data class ToggleFinished(val id: Int) : MainEvent
 //    data object TogglePlayPause : MainEvent
+    data object ResetClick: MainEvent
 }

@@ -17,9 +17,12 @@ interface TracksDao {
     @Query("SELECT * FROM trackentity WHERE id IS :id")
     suspend fun getById(id: Int): TrackEntity
 
-    @Query("UPDATE trackentity SET isFinished = :flag WHERE id IS :id")
-    suspend fun finishedById(id: Int, flag: Boolean)
+    @Query("UPDATE trackentity SET isFinished = 1 WHERE id IS :id")
+    suspend fun setFinished(id: Int)
 
     @Query("SELECT EXISTS(SELECT * FROM trackentity)")
     suspend fun checkNewDevice(): Boolean
+
+    @Query("UPDATE trackentity SET isFinished = 0")
+    suspend fun resetFinished()
 }

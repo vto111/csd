@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -81,17 +82,16 @@ fun MainScreen(
                             contentDescription = "item",
                             contentScale = ContentScale.FillWidth
                         )
-//                        Text(
-//                            text = playList[it].id.toString(),
-//                            fontWeight = FontWeight.Bold,
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                                .padding(8.dp),
-//                            textAlign = TextAlign.Center,
-////                                textAlign = TextAlign.End,
-//                            color = Color.Black
-//                        )
                     }
+                }
+            }
+            if (playerState.allDone) {
+                Spacer(modifier = Modifier.weight(1f))
+                Button(
+                    modifier = Modifier.background(MaterialTheme.colors.background),
+                    onClick = { viewModel.onEvent(MainEvent.ResetClick) }
+                ) {
+                    Text(text = "RESET")
                 }
             }
             Spacer(modifier = Modifier.weight(1f))

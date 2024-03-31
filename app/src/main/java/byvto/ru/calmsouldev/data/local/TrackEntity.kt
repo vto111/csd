@@ -12,7 +12,6 @@ data class TrackEntity(
     val fileName: String,
     val isFinished: Boolean,
     val order: Int
-    // что еще может быть нужно в таблице?
 ) {
     fun toTrack() : Track {
         return Track(

@@ -61,6 +61,7 @@ class MainViewModel @Inject constructor(
     fun onEvent(event: MainEvent) {
         when(event) {
             is MainEvent.BigHeadClick -> bigHeadClick()
+            is MainEvent.ResetClick -> resetFinished()
         }
     }
 
@@ -70,7 +71,7 @@ class MainViewModel @Inject constructor(
         // стоит перенести в SplashScreen.
         Log.i("initDb", "New Device, creating index!")
         context.assets.list("ogg")?.forEachIndexed { index, file ->
-            Log.i(index.toString(), file)
+//            Log.i(index.toString(), file)
             db.dao.insertTrack(
                 TrackEntity(
                     id = index,
@@ -89,10 +90,25 @@ class MainViewModel @Inject constructor(
     private fun getAll() {
         viewModelScope.launch {
             _playList.value = db.dao.getAll().map { it.toTrack() }
+            val finish = playList.value.count {
+                !it.isFinished
+            }
+            Log.i("FINISH", finish.toString())
+            if (finish == 0) {
+                _playerState.update {
+                    it.copy(
+                        allDone = true
+                    )
+                }
+                Log.i("FINISH", "start again!")
+            }
         }
     }
 
     private fun bigHeadClick() {
+        if (playerState.value.allDone) {
+            return
+        }
         if (playerState.value.isPlaying) {
             player.stop()
             _playerState.update {
@@ -104,7 +120,6 @@ class MainViewModel @Inject constructor(
             val rnd = playList.value.filter {
                 !it.isFinished
             }.map { it.id }.random()
-//            val rnd = (1..playList.value.size).random()
             viewModelScope.launch {
                 getById(rnd)
             }
@@ -125,20 +140,33 @@ class MainViewModel @Inject constructor(
             )
         }
         val uri = Uri.fromFile(File("android_asset/ogg/${playerState.value.fileName}"))
-//        println("URI: $uri")
         player.setMediaItem(MediaItem.fromUri(uri))
-        player.prepare()
+//        player.prepare()
     }
 
-    fun setFinished(id: Int) {
+    private fun setFinished(id: Int) {
         viewModelScope.launch {
-            db.dao.finishedById(id, true)
+            db.dao.setFinished(
+                id = id
+            )
             _playerState.update {
                 it.copy(
                     isPlaying = false
                 )
             }
-            getAll()    //TODO продумать как переделать
+            getAll()    //TODO продумать как обновлять без запроса всего списка
         }
+    }
+
+    private fun resetFinished() {
+        viewModelScope.launch {
+            db.dao.resetFinished()
+            _playerState.update {
+                it.copy(
+                    allDone = false
+                )
+            }
+        }
+        getAll()
     }
 }
