@@ -93,14 +93,12 @@ class MainViewModel @Inject constructor(
             val finish = playList.value.count {
                 !it.isFinished
             }
-            Log.i("FINISH", finish.toString())
             if (finish == 0) {
                 _playerState.update {
                     it.copy(
                         allDone = true
                     )
                 }
-                Log.i("FINISH", "start again!")
             }
         }
     }

@@ -8,18 +8,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,13 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.ui.PlayerView
 
+@kotlin.OptIn(ExperimentalMaterial3Api::class)
 @OptIn(UnstableApi::class) @Composable
 fun MainScreen(
     viewModel: MainViewModel
@@ -45,7 +42,13 @@ fun MainScreen(
     val playList by viewModel.playList.collectAsState()
     val playerState by viewModel.playerState.collectAsState()
 
-    Scaffold() {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(text = "Calm Soul") }
+            )
+        }
+    ) {
         Column(
             modifier = Modifier
                 .padding(paddingValues = it)
@@ -60,10 +63,6 @@ fun MainScreen(
                 items(playList.size) {
                     Box(
                         modifier = Modifier
-//                            .clickable {
-//                                viewModel.onEvent(MainEvent.SmallHeadClick(playList[it].id))
-//                            }
-//                                .fillMaxSize()
                             .padding(4.dp),
 //                            .clip(CircleShape),
                         contentAlignment = Alignment.Center
@@ -72,7 +71,7 @@ fun MainScreen(
                             modifier = Modifier
                                 .background(
                                     if (playerState.id == playList[it].id) Color.LightGray
-                                    else MaterialTheme.colors.background
+                                    else MaterialTheme.colorScheme.background
                                 ),
                             imageVector = if (playList[it].isFinished) {
                                 ImageVector.vectorResource(id = R.drawable.tollev_green_v2)
@@ -88,7 +87,7 @@ fun MainScreen(
             if (playerState.allDone) {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
-                    modifier = Modifier.background(MaterialTheme.colors.background),
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background),
                     onClick = { viewModel.onEvent(MainEvent.ResetClick) }
                 ) {
                     Text(text = "RESET")
