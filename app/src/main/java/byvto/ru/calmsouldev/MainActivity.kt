@@ -39,7 +39,13 @@ class MainActivity() : ComponentActivity() {
                         SplashScreen(navController = navController)
                     }
                     composable("main_screen") {
-                        MainScreen(viewModel = hiltViewModel())
+                        MainScreen(
+                            viewModel = hiltViewModel(),
+                            navController = navController
+                        )
+                    }
+                    composable("about_screen") {
+                        AboutScreen(navController = navController)
                     }
                 }
             }
