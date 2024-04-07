@@ -60,6 +60,7 @@ class MainViewModel @Inject constructor(
 
     fun onEvent(event: MainEvent) {
         when(event) {
+            is MainEvent.SmallHeadClick -> repeatFinished(event.id)
             is MainEvent.BigHeadClick -> bigHeadClick()
             is MainEvent.ResetClick -> resetFinished()
         }
@@ -71,7 +72,6 @@ class MainViewModel @Inject constructor(
         // стоит перенести в SplashScreen.
         Log.i("initDb", "New Device, creating index!")
         context.assets.list("ogg")?.forEachIndexed { index, file ->
-//            Log.i(index.toString(), file)
             db.dao.insertTrack(
                 TrackEntity(
                     id = index,
@@ -109,6 +109,7 @@ class MainViewModel @Inject constructor(
         }
         if (playerState.value.isPlaying) {
             player.stop()
+//            player.release()
             _playerState.update {
                 it.copy(
                     isPlaying = false
@@ -126,6 +127,17 @@ class MainViewModel @Inject constructor(
                     isPlaying = true
                 )
             }
+        }
+    }
+
+    private fun repeatFinished(id: Int) {
+        viewModelScope.launch {
+            getById(id)
+        }
+        _playerState.update {
+            it.copy(
+                isPlaying = true
+            )
         }
     }
 

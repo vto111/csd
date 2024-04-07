@@ -135,8 +135,12 @@ fun MainScreen(
                     items(playList.size) {
                         Box(
                             modifier = Modifier
+                                .clickable {
+                                    if (playList[it].isFinished) {
+                                        viewModel.onEvent(MainEvent.SmallHeadClick(playList[it].id))
+                                    }
+                                }
                                 .padding(4.dp),
-//                            .clip(CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
