@@ -151,7 +151,7 @@ class MainViewModel @Inject constructor(
         }
         val uri = Uri.fromFile(File("android_asset/ogg/${playerState.value.fileName}"))
         player.setMediaItem(MediaItem.fromUri(uri))
-//        player.prepare()
+        player.prepare()
     }
 
     private fun setFinished(id: Int) {
