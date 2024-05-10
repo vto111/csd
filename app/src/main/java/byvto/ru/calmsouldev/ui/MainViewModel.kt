@@ -1,17 +1,21 @@
-package byvto.ru.calmsouldev
+package byvto.ru.calmsouldev.ui
 
+import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Player.Listener
 import androidx.media3.exoplayer.ExoPlayer
+import byvto.ru.calmsouldev.PlayerState
 import byvto.ru.calmsouldev.data.local.TracksDatabase
 import byvto.ru.calmsouldev.data.local.TrackEntity
-import byvto.ru.calmsouldev.model.Track
+import byvto.ru.calmsouldev.domain.model.Track
+import byvto.ru.calmsouldev.domain.repository.CalmSoulRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    private val repo: CalmSoulRepo,
     private val db: TracksDatabase,
     @ApplicationContext context: Context
 ): ViewModel() {
@@ -38,7 +43,7 @@ class MainViewModel @Inject constructor(
         .build()
         .apply {
             playWhenReady = true
-            prepare()
+//            prepare()
             addListener(
                 object : Listener {
                     override fun onPlaybackStateChanged(playbackState: Int) {
@@ -164,7 +169,7 @@ class MainViewModel @Inject constructor(
                     isPlaying = false
                 )
             }
-            getAll()    //TODO продумать как обновлять без запроса всего списка
+            getAll()    //TODO как обновлять без запроса всего списка?
         }
     }
 

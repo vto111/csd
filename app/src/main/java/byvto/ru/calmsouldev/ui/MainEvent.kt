@@ -1,4 +1,4 @@
-package byvto.ru.calmsouldev
+package byvto.ru.calmsouldev.ui
 
 sealed interface MainEvent {
     data class SmallHeadClick(val id: Int) : MainEvent

@@ -1,4 +1,4 @@
-package byvto.ru.calmsouldev.model
+package byvto.ru.calmsouldev.domain.model
 
 data class Track(
     val id: Int,

@@ -2,7 +2,7 @@ package byvto.ru.calmsouldev.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import byvto.ru.calmsouldev.model.Track
+import byvto.ru.calmsouldev.domain.model.Track
 
 @Entity
 data class TrackEntity(

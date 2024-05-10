@@ -21,6 +21,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import byvto.ru.calmsouldev.ui.AboutScreen
+import byvto.ru.calmsouldev.ui.MainScreen
+import byvto.ru.calmsouldev.ui.UpdateScreen
 import byvto.ru.calmsouldev.ui.theme.CalmSoulDevTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -34,7 +37,7 @@ class MainActivity() : ComponentActivity() {
         setContent {
             CalmSoulDevTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "splash_screen") {
+                NavHost(navController = navController, startDestination = "update_screen") {
                     composable("splash_screen") {
                         SplashScreen(navController = navController)
                     }
@@ -46,6 +49,12 @@ class MainActivity() : ComponentActivity() {
                     }
                     composable("about_screen") {
                         AboutScreen(navController = navController)
+                    }
+                    composable("update_screen") {
+                        UpdateScreen(
+                            viewModel = hiltViewModel(),
+                            navController = navController
+                        )
                     }
                 }
             }

@@ -1,4 +1,4 @@
-package byvto.ru.calmsouldev
+package byvto.ru.calmsouldev.ui
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
@@ -48,6 +48,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import byvto.ru.calmsouldev.R
+import byvto.ru.calmsouldev.menuItems
 import kotlinx.coroutines.launch
 
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
