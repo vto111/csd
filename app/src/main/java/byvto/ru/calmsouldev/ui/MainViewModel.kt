@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
         }
 
     init {
-        if (!checkDb()) initDb(context = context)
+//        if (!checkDb()) initDb(context = context)
         getAll()
     }
 
@@ -71,26 +71,27 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun initDb(context: Context) = runBlocking {
-        //TODO инит базы на новом устройстве!
-        // надо придумать как правильно, тут тупо перебор!!!
-        // стоит перенести в SplashScreen.
-        Log.i("initDb", "New Device, creating index!")
-        context.assets.list("ogg")?.forEachIndexed { index, file ->
-            db.dao.insertTrack(
-                TrackEntity(
-                    id = index,
-                    fileName = file,
-                    isFinished = false,
-                    order = 0
-                )
-            )
-        }
-    }
-
-    private fun checkDb(): Boolean = runBlocking {
-        return@runBlocking db.dao.checkNewDevice()
-    }
+//    private fun initDb(context: Context) = runBlocking {
+//        //TODO инит базы на новом устройстве!
+//        // надо придумать как правильно, тут тупо перебор!!!
+//        // стоит перенести в SplashScreen.
+//        Log.i("initDb", "New Device, creating index!")
+//        context.assets.list("ogg")?.forEachIndexed { index, file ->
+//            db.dao.insertTrack(
+//                TrackEntity(
+//                    id = index,
+//                    description = "",
+//                    fileName = file,
+//                    isFinished = false,
+//                    order = 0
+//                )
+//            )
+//        }
+//    }
+//
+//    private fun checkDb(): Boolean = runBlocking {
+//        return@runBlocking db.dao.checkNewDevice()
+//    }
 
     private fun getAll() {
         viewModelScope.launch {
@@ -154,7 +155,8 @@ class MainViewModel @Inject constructor(
                 fileName = result.fileName
             )
         }
-        val uri = Uri.fromFile(File("android_asset/ogg/${playerState.value.fileName}"))
+//        val uri = Uri.fromFile(File("android_asset/ogg/${playerState.value.fileName}"))
+        val uri = playerState.value.fileName.toUri()
         player.setMediaItem(MediaItem.fromUri(uri))
         player.prepare()
     }

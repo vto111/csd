@@ -9,6 +9,7 @@ data class TrackEntity(
 
     @PrimaryKey(autoGenerate = false)
     val id: Int,
+    val description: String,
     val fileName: String,
     val isFinished: Boolean,
     val order: Int
@@ -16,6 +17,7 @@ data class TrackEntity(
     fun toTrack() : Track {
         return Track(
             id = id,
+            description = description,
             fileName = fileName,
             isFinished = isFinished,
             order = order

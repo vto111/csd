@@ -134,12 +134,12 @@ fun MainScreen(
                     columns = GridCells.Fixed(7),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(playList.size) {
+                    items(playList.size) { item ->
                         Box(
                             modifier = Modifier
                                 .clickable {
-                                    if (playList[it].isFinished) {
-                                        viewModel.onEvent(MainEvent.SmallHeadClick(playList[it].id))
+                                    if (playList[item].isFinished) {
+                                        viewModel.onEvent(MainEvent.SmallHeadClick(playList[item].id))
                                     }
                                 }
                                 .padding(4.dp),
@@ -148,10 +148,10 @@ fun MainScreen(
                             Image(
                                 modifier = Modifier
                                     .background(
-                                        if (playerState.id == playList[it].id) Color.LightGray
+                                        if (playerState.id == playList[item].id) Color.LightGray
                                         else MaterialTheme.colorScheme.background
                                     ),
-                                imageVector = if (playList[it].isFinished) {
+                                imageVector = if (playList[item].isFinished) {
                                     ImageVector.vectorResource(id = R.drawable.tollev_green_v2)
                                 } else {
                                     ImageVector.vectorResource(id = R.drawable.tollev_white_v2)
