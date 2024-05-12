@@ -1,5 +1,7 @@
 package byvto.ru.calmsouldev.ui
 
+import android.os.Build
+import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +39,7 @@ import androidx.navigation.NavController
 import byvto.ru.calmsouldev.menuItems
 import kotlinx.coroutines.launch
 
+@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScreen(
@@ -137,9 +140,6 @@ fun UpdateScreen(
                         }
                     }
                 }
-//                Button(onClick = { viewModel.onEvent(UpdateEvent.CheckButtonClick) }) {
-//                    Text(text = "Check Updates!")
-//                }
             }
         }
     }

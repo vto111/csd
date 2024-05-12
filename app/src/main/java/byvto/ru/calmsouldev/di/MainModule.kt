@@ -61,8 +61,12 @@ class MainModule {
     @Provides
     @Singleton
     fun provideRepo(
-        api: CalmSoulApi
+        api: CalmSoulApi,
+        db: TracksDatabase
     ): CalmSoulRepo {
-        return CalmSoulRepoImpl(api)
+        return CalmSoulRepoImpl(
+            api = api,
+            db = db
+        )
     }
 }

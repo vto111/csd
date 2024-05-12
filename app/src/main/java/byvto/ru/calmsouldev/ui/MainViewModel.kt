@@ -1,9 +1,6 @@
 package byvto.ru.calmsouldev.ui
 
-import android.app.DownloadManager
 import android.content.Context
-import android.net.Uri
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,8 +9,6 @@ import androidx.media3.common.Player
 import androidx.media3.common.Player.Listener
 import androidx.media3.exoplayer.ExoPlayer
 import byvto.ru.calmsouldev.PlayerState
-import byvto.ru.calmsouldev.data.local.TracksDatabase
-import byvto.ru.calmsouldev.data.local.TrackEntity
 import byvto.ru.calmsouldev.domain.model.Track
 import byvto.ru.calmsouldev.domain.repository.CalmSoulRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,14 +17,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repo: CalmSoulRepo,
-    private val db: TracksDatabase,
     @ApplicationContext context: Context
 ): ViewModel() {
 
@@ -71,31 +63,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
-//    private fun initDb(context: Context) = runBlocking {
-//        //TODO инит базы на новом устройстве!
-//        // надо придумать как правильно, тут тупо перебор!!!
-//        // стоит перенести в SplashScreen.
-//        Log.i("initDb", "New Device, creating index!")
-//        context.assets.list("ogg")?.forEachIndexed { index, file ->
-//            db.dao.insertTrack(
-//                TrackEntity(
-//                    id = index,
-//                    description = "",
-//                    fileName = file,
-//                    isFinished = false,
-//                    order = 0
-//                )
-//            )
-//        }
-//    }
-//
-//    private fun checkDb(): Boolean = runBlocking {
-//        return@runBlocking db.dao.checkNewDevice()
-//    }
-
     private fun getAll() {
         viewModelScope.launch {
-            _playList.value = db.dao.getAll().map { it.toTrack() }
+            _playList.value = repo.getLocalList()
             val finish = playList.value.count {
                 !it.isFinished
             }
@@ -115,7 +85,6 @@ class MainViewModel @Inject constructor(
         }
         if (playerState.value.isPlaying) {
             player.stop()
-//            player.release()
             _playerState.update {
                 it.copy(
                     isPlaying = false
@@ -148,14 +117,13 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun getById(id: Int) {
-        val result = db.dao.getById(id)
+        val result = repo.getLocalById(id)
         _playerState.update {
             it.copy(
                 id = result.id,
                 fileName = result.fileName
             )
         }
-//        val uri = Uri.fromFile(File("android_asset/ogg/${playerState.value.fileName}"))
         val uri = playerState.value.fileName.toUri()
         player.setMediaItem(MediaItem.fromUri(uri))
         player.prepare()
@@ -163,9 +131,7 @@ class MainViewModel @Inject constructor(
 
     private fun setFinished(id: Int) {
         viewModelScope.launch {
-            db.dao.setFinished(
-                id = id
-            )
+            repo.setFinishedById(id)
             _playerState.update {
                 it.copy(
                     isPlaying = false
@@ -177,7 +143,7 @@ class MainViewModel @Inject constructor(
 
     private fun resetFinished() {
         viewModelScope.launch {
-            db.dao.resetFinished()
+            repo.resetFinished()
             _playerState.update {
                 it.copy(
                     allDone = false
