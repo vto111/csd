@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -34,13 +35,14 @@ class MainActivity() : ComponentActivity() {
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContent {
             CalmSoulDevTheme {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "update_screen") {
-                    composable("splash_screen") {
-                        SplashScreen(navController = navController)
-                    }
+//                    composable("splash_screen") {
+//                        SplashScreen(navController = navController)
+//                    }
                     composable("main_screen") {
                         MainScreen(
                             viewModel = hiltViewModel(),
@@ -62,34 +64,34 @@ class MainActivity() : ComponentActivity() {
     }
 }
 
-@Composable
-fun SplashScreen(navController: NavController) {
-    val scale = remember {
-        Animatable(0f)
-    }
-
-    LaunchedEffect(key1 = true) {
-        scale.animateTo(
-            targetValue = 5f,
-            animationSpec = tween(
-                durationMillis = 500,
-                easing = {
-                    OvershootInterpolator(2f).getInterpolation(it)
-                }
-            )
-        )
-        delay(2000L)
-        navController.navigate("main_screen")
-    }
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.moai),
-            contentDescription = "moai",
-            modifier = Modifier.scale(scale.value)
-        )
-    }
-}
+//@Composable
+//fun SplashScreen(navController: NavController) {
+//    val scale = remember {
+//        Animatable(0f)
+//    }
+//
+//    LaunchedEffect(key1 = true) {
+//        scale.animateTo(
+//            targetValue = 5f,
+//            animationSpec = tween(
+//                durationMillis = 500,
+//                easing = {
+//                    OvershootInterpolator(2f).getInterpolation(it)
+//                }
+//            )
+//        )
+//        delay(2000L)
+//        navController.navigate("main_screen")
+//    }
+//
+//    Box(
+//        contentAlignment = Alignment.Center,
+//        modifier = Modifier.fillMaxSize()
+//    ) {
+//        Image(
+//            painter = painterResource(id = R.drawable.moai),
+//            contentDescription = "moai",
+//            modifier = Modifier.scale(scale.value)
+//        )
+//    }
+//}

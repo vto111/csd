@@ -23,59 +23,65 @@ class CalmSoulRepoImpl @Inject constructor(
     private val db: TracksDatabase,
 ) : CalmSoulRepo {
 
-    override suspend fun getRemoteList(): List<TrackDto> {
-        return try {
-            api.tracks()
+    override suspend fun getRemoteList(): Flow<Resource<List<TrackDto>>> = flow {
+        emit(Resource.Loading())
+        try {
+            val result = api.tracks()
+            emit(Resource.Success(result))
         } catch (e: HttpException) {
-            Log.e("HttpException", "Connection error")
+//            Log.e("HttpException", "Connection error")
+            emit(Resource.Error(
+                message = "Http Connection Error!",
+                data = emptyList()
+            ))
             e.printStackTrace()
-            return emptyList()
         }
         catch (e: IOException) {
-            Log.e("IOException", "Connection error")
+//            Log.e("IOException", "Connection error")
+            emit(Resource.Error(
+                message = "Network Connection Error!",
+                data = emptyList()
+            ))
             e.printStackTrace()
-            return emptyList()
         }
     }
 
-    //    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-//    override suspend fun getRemoteList(): Flow<Resource<List<TrackDto>>> = flow {
-//        emit(Resource.Loading())
-//
-//        try {
-//            val result = api.tracks()
-//            emit(Resource.Success(result))
+
+//    override suspend fun getRemoteById(id: String): TrackDto? {
+//        return try {
+//            api.getById(id = id)
 //        } catch (e: HttpException) {
 //            Log.e("HttpException", "Connection error")
-//            emit(Resource.Error(
-//                message = "HttpException",
-//                data = emptyList()
-//            ))
 //            e.printStackTrace()
+//            return null
 //        }
 //        catch (e: IOException) {
 //            Log.e("IOException", "Connection error")
-//            emit(Resource.Error(
-//                message = "IOException",
-//                data = emptyList()
-//            ))
 //            e.printStackTrace()
+//            return null
 //        }
 //    }
 
-
-    override suspend fun getRemoteById(id: String): TrackDto? {
-        return try {
-            api.getById(id = id)
+    override suspend fun getRemoteById(id: String): Flow<Resource<TrackDto>> = flow {
+        emit(Resource.Loading())
+        try {
+            val result = api.getById(id = id)
+            emit(Resource.Success(result))
         } catch (e: HttpException) {
             Log.e("HttpException", "Connection error")
+            emit(Resource.Error(
+                message = "Http Connection Error!",
+                data = null
+            ))
             e.printStackTrace()
-            return null
         }
         catch (e: IOException) {
             Log.e("IOException", "Connection error")
+            emit(Resource.Error(
+                message = "Network Connection Error!",
+                data =  null
+            ))
             e.printStackTrace()
-            return null
         }
     }
 
