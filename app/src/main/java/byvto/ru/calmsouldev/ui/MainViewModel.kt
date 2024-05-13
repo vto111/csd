@@ -51,7 +51,6 @@ class MainViewModel @Inject constructor(
         }
 
     init {
-//        if (!checkDb()) initDb(context = context)
         getAll()
     }
 
