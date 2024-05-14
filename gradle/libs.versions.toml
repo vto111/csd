@@ -1,6 +1,7 @@
 [versions]
 activityCompose = "1.9.0"
 agp = "8.2.2"
+#compose-bom = "2024.02.01"
 coreKtx = "1.13.1"
 coreSplashscreen = "1.0.1"
 espressoCore = "3.5.1"
@@ -20,9 +21,10 @@ uiTestManifest = "1.6.7"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+#androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom"}
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui"}
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview"}
-androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4"}
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref="uiTestManifest"}
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling"}
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }

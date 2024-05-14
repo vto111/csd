@@ -46,22 +46,6 @@ class CalmSoulRepoImpl @Inject constructor(
         }
     }
 
-
-//    override suspend fun getRemoteById(id: String): TrackDto? {
-//        return try {
-//            api.getById(id = id)
-//        } catch (e: HttpException) {
-//            Log.e("HttpException", "Connection error")
-//            e.printStackTrace()
-//            return null
-//        }
-//        catch (e: IOException) {
-//            Log.e("IOException", "Connection error")
-//            e.printStackTrace()
-//            return null
-//        }
-//    }
-
     override suspend fun getRemoteById(id: String): Flow<Resource<TrackDto>> = flow {
         emit(Resource.Loading())
         try {

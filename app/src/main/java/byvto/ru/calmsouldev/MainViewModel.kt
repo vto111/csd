@@ -2,6 +2,7 @@ package byvto.ru.calmsouldev
 
 import android.app.DownloadManager
 import android.content.Context
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,10 +13,12 @@ import byvto.ru.calmsouldev.ui.CalmSoulEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import javax.inject.Inject
 
@@ -47,8 +50,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun synchronize(context: Context) {
-        viewModelScope.launch {
+    private fun synchronize(context: Context) = runBlocking {
+//        viewModelScope.launch {
             _localList.value = repo.getLocalList()
             repo.getRemoteList()
                 .collect { result ->
@@ -82,8 +85,7 @@ class MainViewModel @Inject constructor(
                     }
                 }
             _isLoading.value = false
-//            _localList.value = repo.getLocalList()
-        }
+//        }
     }
 
     private suspend fun addRemoteTrack(context: Context, id: String) {
@@ -117,6 +119,7 @@ class MainViewModel @Inject constructor(
                                 isFinished = false,
                                 order = result.data.order
                             )
+                            Log.e("Track", "${result.data.id} added")
                         }
                     }
 
