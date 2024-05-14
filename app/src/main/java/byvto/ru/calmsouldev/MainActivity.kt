@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import byvto.ru.calmsouldev.ui.AboutScreen
 import byvto.ru.calmsouldev.ui.CalmSoulEvent
-import byvto.ru.calmsouldev.ui.MainScreen
+import byvto.ru.calmsouldev.ui.HomeScreen
 import byvto.ru.calmsouldev.ui.UpdateScreen
 import byvto.ru.calmsouldev.ui.theme.CalmSoulDevTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity() : ComponentActivity() {
 
-    private val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,13 +44,12 @@ class MainActivity() : ComponentActivity() {
                             }
                         }
                     }
-
                 }
 
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "main_screen") {
-                    composable("main_screen") {
-                        MainScreen(
+                NavHost(navController = navController, startDestination = "home_screen") {
+                    composable("home_screen") {
+                        HomeScreen(
                             viewModel = hiltViewModel(),
                             navController = navController
                         )

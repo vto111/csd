@@ -21,7 +21,7 @@ val menuItems = listOf(
         title = "Home",
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home,
-        route = "main_screen"
+        route = "home_screen"
     ),
     MenuItem(
         title = "About",
