@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.googleDevtoolsKsp)
     id 'com.google.dagger.hilt.android'
 //    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -80,6 +81,7 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     // Media3
     implementation(libs.androidx.media3.exoplayer)

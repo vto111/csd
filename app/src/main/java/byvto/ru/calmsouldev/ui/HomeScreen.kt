@@ -70,7 +70,7 @@ fun HomeScreen(
     }
 
     LaunchedEffect(true) {
-        viewModel.getAll()
+        viewModel.getTrackList()
     }
 
     ModalNavigationDrawer(
@@ -181,7 +181,7 @@ fun HomeScreen(
                     imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
                     contentDescription = "head",
                     modifier = Modifier
-                        .size(300.dp)
+                        .size(200.dp)
 //                        .fillMaxWidth()
                         .clip(CircleShape)
                         .background(Color.LightGray)
@@ -190,7 +190,7 @@ fun HomeScreen(
                             viewModel.onEvent(MainEvent.BigHeadClick)
                         },
                 )
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }

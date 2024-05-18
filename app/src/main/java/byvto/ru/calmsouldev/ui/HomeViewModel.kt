@@ -1,7 +1,6 @@
 package byvto.ru.calmsouldev.ui
 
 import android.content.Context
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,7 +62,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getAll() {
+    fun getTrackList() {
         viewModelScope.launch {
             _playList.value = repo.getLocalList()
             val finish = playList.value.count {
@@ -138,7 +136,7 @@ class HomeViewModel @Inject constructor(
                     isPlaying = false
                 )
             }
-            getAll()    //TODO как обновлять без запроса всего списка?
+            getTrackList()    //TODO как обновлять без запроса всего списка?
         }
     }
 
@@ -150,7 +148,7 @@ class HomeViewModel @Inject constructor(
                     allDone = false
                 )
             }
+            getTrackList()
         }
-        getAll()
     }
 }

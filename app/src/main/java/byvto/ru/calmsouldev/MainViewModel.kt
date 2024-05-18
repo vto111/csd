@@ -14,7 +14,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -29,10 +31,11 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _remoteList = MutableStateFlow(listOf<TrackDto>())
-    val remoteList = _remoteList.asStateFlow()
 
     private val _localList = MutableStateFlow(listOf<Track>())
-    val localList = _localList.asStateFlow()
+
+    private val _sharedFlow = MutableSharedFlow<String>()
+    val sharedFlow = _sharedFlow.asSharedFlow()
 
     private val _channel = Channel<CalmSoulEvent>()
     val channel = _channel.receiveAsFlow()
@@ -47,6 +50,7 @@ class MainViewModel @Inject constructor(
     private fun showToast(message: String) {
         viewModelScope.launch {
             _channel.send(CalmSoulEvent.ShowToast(message))
+//            _sharedFlow.emit(message)
         }
     }
 
@@ -127,7 +131,7 @@ class MainViewModel @Inject constructor(
                         showToast(result.message ?: "Unknown error!")
                     }
 
-                    is Resource.Loading -> {}
+                    is Resource.Loading -> { /* TODO */ }
                 }
             }
     }

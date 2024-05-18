@@ -1,8 +1,6 @@
 package byvto.ru.calmsouldev.ui
 
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +39,6 @@ import androidx.navigation.NavController
 import byvto.ru.calmsouldev.menuItems
 import kotlinx.coroutines.launch
 
-//@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateScreen(
@@ -61,6 +57,7 @@ fun UpdateScreen(
 
     val context = LocalContext.current
     LaunchedEffect(true) {
+        viewModel.getLists()
         viewModel.channel.collect { event ->
             when (event) {
                 is CalmSoulEvent.ShowToast -> {
