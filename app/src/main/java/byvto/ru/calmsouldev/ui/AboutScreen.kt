@@ -4,12 +4,17 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -32,7 +37,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import byvto.ru.calmsouldev.menuItems
@@ -113,19 +125,30 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.weight(1f))
-                Text(text = "Developer: Sergey Razrabov")
+//                Text(text = "Developer: Sergey Razrabov")
+                Image(
+                    bitmap = ImageBitmap.imageResource(R.drawable.pl_and_ari),
+                    modifier = Modifier
+                        .size(300.dp)
+//                        .fillMaxWidth()
+//                        .clip(RectangleShape)
+//                        .background(Color.LightGray)
+//                        .border(4.dp, Color.Gray, RectangleShape)
+                    ,
+                    contentDescription = "Философия"
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "E-mail: info@site.com",
+                    text = "E-mail: info@byvto.ru",
                     modifier = Modifier.clickable {
-                        context.sendMail(to = "info@site.com", subject = "CalmSoul Application")
+                        context.sendMail(to = "info@byvto.ru", subject = "CalmSoul Application")
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Web: www.site.com",
+                    text = "Web: www.byvto.ru",
                     modifier = Modifier.clickable {
-                        context.openWeb(link = "https://www.site.com")
+                        context.openWeb(link = "https://www.byvto.ru")
                     }
                 )
                 Spacer(modifier = Modifier.weight(1f))
