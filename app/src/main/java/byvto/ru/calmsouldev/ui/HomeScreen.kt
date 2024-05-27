@@ -137,7 +137,9 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.weight(1f))
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(7),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     items(playList.size) { item ->
                         Box(

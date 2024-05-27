@@ -47,6 +47,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import byvto.ru.calmsouldev.R
 import byvto.ru.calmsouldev.menuItems
 import kotlinx.coroutines.launch
 

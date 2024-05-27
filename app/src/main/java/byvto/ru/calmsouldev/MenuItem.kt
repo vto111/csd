@@ -30,10 +30,10 @@ val menuItems = listOf(
         unselectedIcon = Icons.Outlined.Info,
         route = "about_screen"
     ),
-    MenuItem(
-        title = "Update",
-        selectedIcon = Icons.Filled.CheckCircle,
-        unselectedIcon = Icons.Outlined.CheckCircle,
-        route = "update_screen"
-    )
+//    MenuItem(
+//        title = "Update",
+//        selectedIcon = Icons.Filled.CheckCircle,
+//        unselectedIcon = Icons.Outlined.CheckCircle,
+//        route = "update_screen"
+//    )
 )
