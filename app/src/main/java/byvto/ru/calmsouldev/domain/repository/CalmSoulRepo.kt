@@ -10,10 +10,16 @@ interface CalmSoulRepo {
 
     suspend fun getRemoteList(): Flow<Resource<List<TrackDto>>>
     suspend fun getRemoteById(id: String): Flow<Resource<TrackDto>>
-//    suspend fun getRemoteById(id: String): TrackDto?
     suspend fun getLocalList(): List<Track>
     suspend fun getLocalById(id: Int): TrackEntity
-    suspend fun addNewTrack(id: Int, description: String, fileName: String, isFinished: Boolean, order: Int)
+    suspend fun addNewTrack(
+        id: Int,
+        description: String,
+        fileName: String,
+        isFinished: Boolean,
+        order: Int
+    )
     suspend fun setFinishedById(id: Int)
     suspend fun resetFinished()
+    suspend fun deleteTrackById(id: Int)
 }

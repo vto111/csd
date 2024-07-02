@@ -49,6 +49,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import byvto.ru.calmsouldev.MainEvent
 import byvto.ru.calmsouldev.R
 import byvto.ru.calmsouldev.menuItems
 import kotlinx.coroutines.launch
@@ -82,7 +83,8 @@ fun HomeScreen(
                         label = { Text(text = menuItem.title) },
                         selected = index == selectedMenuIndex,
                         onClick = {
-                            if (navController.currentBackStackEntry?.destination?.route != menuItem.route) {
+                            if (navController.currentDestination?.route != menuItem.route) {
+//                            if (navController.currentBackStackEntry?.destination?.route != menuItem.route) {
                                 navController.navigate(menuItem.route)
                                 selectedMenuIndex = index
                                 scope.launch {

@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import byvto.ru.calmsouldev.MainEvent
 import byvto.ru.calmsouldev.menuItems
 import kotlinx.coroutines.launch
 
@@ -60,9 +61,10 @@ fun UpdateScreen(
         viewModel.getLists()
         viewModel.channel.collect { event ->
             when (event) {
-                is CalmSoulEvent.ShowToast -> {
+                is MainEvent.ShowToast -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
                 }
+                else -> Unit
             }
         }
 

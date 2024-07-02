@@ -1,6 +1,8 @@
 package byvto.ru.calmsouldev.di
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresExtension
 import androidx.room.Room
 import byvto.ru.calmsouldev.data.local.TracksDatabase
 import byvto.ru.calmsouldev.data.remote.CalmSoulApi
@@ -58,6 +60,7 @@ class MainModule {
         return CalmSoulApiImpl(httpClient)
     }
 
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     @Provides
     @Singleton
     fun provideRepo(

@@ -73,7 +73,7 @@ fun AboutScreen(
                         label = { Text(text = menuItem.title) },
                         selected = index == selectedMenuIndex,
                         onClick = {
-                            if (navController.currentBackStackEntry?.destination?.route != menuItem.route) {
+                            if (navController.currentDestination?.route != menuItem.route) {
                                 navController.navigate(menuItem.route)
                                 selectedMenuIndex = index
                                 scope.launch {

@@ -1,6 +1,7 @@
 package byvto.ru.calmsouldev.ui
 
 import android.content.Context
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Player.Listener
 import androidx.media3.exoplayer.ExoPlayer
+import byvto.ru.calmsouldev.MainEvent
 import byvto.ru.calmsouldev.PlayerState
 import byvto.ru.calmsouldev.domain.model.Track
 import byvto.ru.calmsouldev.domain.repository.CalmSoulRepo
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +38,6 @@ class HomeViewModel @Inject constructor(
         .build()
         .apply {
             playWhenReady = true
-//            prepare()
             addListener(
                 object : Listener {
                     override fun onPlaybackStateChanged(playbackState: Int) {
@@ -50,15 +52,12 @@ class HomeViewModel @Inject constructor(
             )
         }
 
-//    init {
-//        getAll()
-//    }
-
     fun onEvent(event: MainEvent) {
         when(event) {
             is MainEvent.SmallHeadClick -> repeatFinished(event.id)
             is MainEvent.BigHeadClick -> bigHeadClick()
             is MainEvent.ResetClick -> resetFinished()
+            else -> Unit
         }
     }
 
@@ -136,7 +135,7 @@ class HomeViewModel @Inject constructor(
                     isPlaying = false
                 )
             }
-            getTrackList()    //TODO как обновлять без запроса всего списка?
+            getTrackList()
         }
     }
 

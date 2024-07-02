@@ -1,6 +1,7 @@
 package byvto.ru.calmsouldev.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -25,4 +26,7 @@ interface TracksDao {
 
     @Query("UPDATE trackentity SET isFinished = 0")
     suspend fun resetFinished()
+
+    @Query("DELETE FROM trackentity WHERE id IS :id")
+    suspend fun deleteById(id: Int)
 }

@@ -2,6 +2,7 @@ package byvto.ru.calmsouldev.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import byvto.ru.calmsouldev.MainEvent
 import byvto.ru.calmsouldev.Resource
 import byvto.ru.calmsouldev.data.remote.dto.TrackDto
 import byvto.ru.calmsouldev.domain.model.Track
@@ -25,12 +26,12 @@ class UpdateViewModel @Inject constructor(
     private val _localList = MutableStateFlow(listOf<Track>())
     val localList = _localList.asStateFlow()
 
-    private val _channel = Channel<CalmSoulEvent>()
+    private val _channel = Channel<MainEvent>()
     val channel = _channel.receiveAsFlow()
 
     private fun showToast(message: String) {
         viewModelScope.launch {
-            _channel.send(CalmSoulEvent.ShowToast(message))
+            _channel.send(MainEvent.ShowToast(message))
         }
     }
 

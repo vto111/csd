@@ -22,13 +22,15 @@ val menuItems = listOf(
         title = "Home",
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home,
-        route = "home_screen"
+        route = "byvto.ru.calmsouldev.HomeScreen"
+//        route = "home_screen"
     ),
     MenuItem(
         title = "About",
         selectedIcon = Icons.Filled.Info,
         unselectedIcon = Icons.Outlined.Info,
-        route = "about_screen"
+        route = "byvto.ru.calmsouldev.AboutScreen"
+//        route = "about_screen"
     ),
 //    MenuItem(
 //        title = "Update",

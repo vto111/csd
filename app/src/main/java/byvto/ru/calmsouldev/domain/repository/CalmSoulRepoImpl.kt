@@ -102,4 +102,8 @@ class CalmSoulRepoImpl @Inject constructor(
     override suspend fun resetFinished() {
         db.dao.resetFinished()
     }
+
+    override suspend fun deleteTrackById(id: Int) {
+        db.dao.deleteById(id = id)
+    }
 }

@@ -9,19 +9,18 @@ import androidx.lifecycle.viewModelScope
 import byvto.ru.calmsouldev.data.remote.dto.TrackDto
 import byvto.ru.calmsouldev.domain.model.Track
 import byvto.ru.calmsouldev.domain.repository.CalmSoulRepo
-import byvto.ru.calmsouldev.ui.CalmSoulEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.io.IOException
+import java.net.URI
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,10 +33,7 @@ class MainViewModel @Inject constructor(
 
     private val _localList = MutableStateFlow(listOf<Track>())
 
-    private val _sharedFlow = MutableSharedFlow<String>()
-    val sharedFlow = _sharedFlow.asSharedFlow()
-
-    private val _channel = Channel<CalmSoulEvent>()
+    private val _channel = Channel<MainEvent>()
     val channel = _channel.receiveAsFlow()
 
     private val _isLoading = MutableStateFlow(true)
@@ -49,46 +45,53 @@ class MainViewModel @Inject constructor(
 
     private fun showToast(message: String) {
         viewModelScope.launch {
-            _channel.send(CalmSoulEvent.ShowToast(message))
-//            _sharedFlow.emit(message)
+            _channel.send(MainEvent.ShowToast(message))
         }
     }
 
     private fun synchronize(context: Context) = runBlocking {
 //        viewModelScope.launch {
-            _localList.value = repo.getLocalList()
-            repo.getRemoteList()
-                .collect { result ->
-                    when (result) {
-                        is Resource.Success -> {
-                            _remoteList.value = result.data ?: emptyList()
-                            if (_localList.value.isEmpty()) {
-                                // синхрить все треки (новое устройство)
-                                _remoteList.value.forEach { track ->
+        _localList.value = repo.getLocalList()
+        repo.getRemoteList()
+            .collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _remoteList.value = result.data ?: emptyList()
+                        if (_localList.value.isEmpty()) {
+                            // синхрить все треки (новое устройство)
+                            _remoteList.value.forEach { track ->
+                                addRemoteTrack(context, track.id)
+                            }
+                        } else {
+                            // сравниваем id и синхрим нужные треки
+                            _remoteList.value.forEach { track ->
+                                if (!_localList.value.map { it.id }
+                                        .contains(track.id.toInt())) {
                                     addRemoteTrack(context, track.id)
                                 }
-                            } else {
-                                // сравниваем id и синхрим нужные треки
-                                _remoteList.value.forEach { track ->
-                                    if (!_localList.value.map { it.id }
-                                            .contains(track.id.toInt())) {
-                                        addRemoteTrack(context, track.id)
-                                    }
+                            }
+                            _localList.value.forEach { track ->
+                                if (!_remoteList.value.map { it.id.toInt() }
+                                        .contains(track.id)) {
+//                                    Log.e("REMOVE", track.toString())
+                                    deleteTrack(track.id)
                                 }
                             }
-                        }
-
-                        is Resource.Error -> {
-                            _remoteList.value = result.data ?: emptyList()
-                            showToast(result.message ?: "Unknown error!")
-                        }
-
-                        is Resource.Loading -> {
-                            _remoteList.value = result.data ?: emptyList()
+//                            _localList.value = repo.getLocalList()
                         }
                     }
+
+                    is Resource.Error -> {
+                        _remoteList.value = result.data ?: emptyList()
+                        showToast(result.message ?: "Unknown error!")
+                    }
+
+                    is Resource.Loading -> {
+                        _remoteList.value = result.data ?: emptyList()
+                    }
                 }
-            _isLoading.value = false
+            }
+        _isLoading.value = false
 //        }
     }
 
@@ -123,7 +126,7 @@ class MainViewModel @Inject constructor(
                                 isFinished = false,
                                 order = result.data.order
                             )
-                            Log.e("Track", "${result.data.id} added")
+//                            Log.e("Track", "${result.data.id} added")
                         }
                     }
 
@@ -131,8 +134,25 @@ class MainViewModel @Inject constructor(
                         showToast(result.message ?: "Unknown error!")
                     }
 
-                    is Resource.Loading -> { /* TODO */ }
+                    is Resource.Loading -> { /* TODO */
+                    }
                 }
             }
+    }
+
+    private fun deleteTrack(id: Int) {
+        //TODO не обновляется список после удаления трека!
+        viewModelScope.launch {
+            val track = repo.getLocalById(id)
+            val path = URI(track.fileName).path
+            try {
+                repo.deleteTrackById(id)
+                File(path).delete()
+                Log.e("DELETED", path.toString())
+            } catch (e: IOException) {
+                Log.e("DELETE", "failed for file $path!")
+                e.printStackTrace()
+            }
+        }
     }
 }
