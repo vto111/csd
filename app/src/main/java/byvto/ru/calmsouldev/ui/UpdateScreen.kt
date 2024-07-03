@@ -148,7 +148,7 @@ fun UpdateScreen(
                 LazyColumn {
                     items(remoteList.size) { item ->
                         Row(modifier = modifier.fillMaxWidth()) {
-                            Text(text = remoteList[item].id)
+                            Text(text = remoteList[item].id.toString())
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(text = remoteList[item].path)
                         }

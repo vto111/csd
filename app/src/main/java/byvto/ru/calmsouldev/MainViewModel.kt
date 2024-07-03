@@ -66,12 +66,12 @@ class MainViewModel @Inject constructor(
                             // сравниваем id и синхрим нужные треки
                             _remoteList.value.forEach { track ->
                                 if (!_localList.value.map { it.id }
-                                        .contains(track.id.toInt())) {
+                                        .contains(track.id)) {
                                     addRemoteTrack(context, track.id)
                                 }
                             }
                             _localList.value.forEach { track ->
-                                if (!_remoteList.value.map { it.id.toInt() }
+                                if (!_remoteList.value.map { it.id }
                                         .contains(track.id)) {
 //                                    Log.e("REMOVE", track.toString())
                                     deleteTrack(track.id)
@@ -95,7 +95,7 @@ class MainViewModel @Inject constructor(
 //        }
     }
 
-    private suspend fun addRemoteTrack(context: Context, id: String) {
+    private suspend fun addRemoteTrack(context: Context, id: Int) {
         repo.getRemoteById(id)
             .collect { result ->
                 when (result) {
@@ -117,6 +117,7 @@ class MainViewModel @Inject constructor(
                                         )
                                     }
                             downloadManager.enqueue(request)
+                            //TODO приделать проверку на скачивание файла
                             val trackUri =
                                 File(context.getExternalFilesDir("/tracks"), localFileName).toUri()
                             repo.addNewTrack(
@@ -126,7 +127,6 @@ class MainViewModel @Inject constructor(
                                 isFinished = false,
                                 order = result.data.order
                             )
-//                            Log.e("Track", "${result.data.id} added")
                         }
                     }
 
@@ -140,9 +140,8 @@ class MainViewModel @Inject constructor(
             }
     }
 
-    private fun deleteTrack(id: Int) {
-        //TODO не обновляется список после удаления трека!
-        viewModelScope.launch {
+    private fun deleteTrack(id: Int) = runBlocking {
+//        viewModelScope.launch {
             val track = repo.getLocalById(id)
             val path = URI(track.fileName).path
             try {
@@ -153,6 +152,6 @@ class MainViewModel @Inject constructor(
                 Log.e("DELETE", "failed for file $path!")
                 e.printStackTrace()
             }
-        }
+//        }
     }
 }

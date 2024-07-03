@@ -6,5 +6,5 @@ interface CalmSoulApi {
 
     suspend fun tracks(): List<TrackDto>
 
-    suspend fun getById(id: String): TrackDto
+    suspend fun getById(id: Int): TrackDto
 }

@@ -46,7 +46,7 @@ class CalmSoulRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRemoteById(id: String): Flow<Resource<TrackDto>> = flow {
+    override suspend fun getRemoteById(id: Int): Flow<Resource<TrackDto>> = flow {
         emit(Resource.Loading())
         try {
             val result = api.getById(id = id)

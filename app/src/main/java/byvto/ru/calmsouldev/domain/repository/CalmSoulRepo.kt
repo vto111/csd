@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface CalmSoulRepo {
 
     suspend fun getRemoteList(): Flow<Resource<List<TrackDto>>>
-    suspend fun getRemoteById(id: String): Flow<Resource<TrackDto>>
+    suspend fun getRemoteById(id: Int): Flow<Resource<TrackDto>>
     suspend fun getLocalList(): List<Track>
     suspend fun getLocalById(id: Int): TrackEntity
     suspend fun addNewTrack(

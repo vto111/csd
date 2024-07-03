@@ -13,7 +13,7 @@ class CalmSoulApiImpl @Inject constructor(
         return httpClient.get("track").body()
     }
 
-    override suspend fun getById(id: String): TrackDto {
+    override suspend fun getById(id: Int): TrackDto {
         return httpClient.get("track/$id").body()
     }
 }
