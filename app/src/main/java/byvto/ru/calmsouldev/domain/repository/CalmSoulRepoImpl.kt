@@ -29,19 +29,20 @@ class CalmSoulRepoImpl @Inject constructor(
             val result = api.tracks()
             emit(Resource.Success(result))
         } catch (e: HttpException) {
-//            Log.e("HttpException", "Connection error")
-            emit(Resource.Error(
-                message = "Http Connection Error!",
-                data = emptyList()
-            ))
+            emit(
+                Resource.Error(
+                    message = "Http Connection Error!",
+                    data = emptyList()
+                )
+            )
             e.printStackTrace()
-        }
-        catch (e: IOException) {
-//            Log.e("IOException", "Connection error")
-            emit(Resource.Error(
-                message = "Network Connection Error!",
-                data = emptyList()
-            ))
+        } catch (e: IOException) {
+            emit(
+                Resource.Error(
+                    message = "Network Connection Error!",
+                    data = emptyList()
+                )
+            )
             e.printStackTrace()
         }
     }
@@ -53,18 +54,21 @@ class CalmSoulRepoImpl @Inject constructor(
             emit(Resource.Success(result))
         } catch (e: HttpException) {
             Log.e("HttpException", "Connection error")
-            emit(Resource.Error(
-                message = "Http Connection Error!",
-                data = null
-            ))
+            emit(
+                Resource.Error(
+                    message = "Http Connection Error!",
+                    data = null
+                )
+            )
             e.printStackTrace()
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             Log.e("IOException", "Connection error")
-            emit(Resource.Error(
-                message = "Network Connection Error!",
-                data =  null
-            ))
+            emit(
+                Resource.Error(
+                    message = "Network Connection Error!",
+                    data = null
+                )
+            )
             e.printStackTrace()
         }
     }

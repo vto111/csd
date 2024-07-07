@@ -54,7 +54,7 @@ class MainModule {
 
     @Provides
     @Singleton
-    fun provideCalmSoulApi(
+    fun provideApi(
         httpClient: HttpClient
     ): CalmSoulApi {
         return CalmSoulApiImpl(httpClient)

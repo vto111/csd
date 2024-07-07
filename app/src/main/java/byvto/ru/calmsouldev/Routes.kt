@@ -8,5 +8,5 @@ object HomeScreen
 @Serializable
 object AboutScreen
 
-@Serializable
-object UpdateScreen
+//@Serializable
+//object UpdateScreen

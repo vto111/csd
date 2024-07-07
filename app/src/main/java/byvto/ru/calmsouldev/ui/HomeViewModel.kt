@@ -85,7 +85,8 @@ class HomeViewModel @Inject constructor(
             player.stop()
             _playerState.update {
                 it.copy(
-                    isPlaying = false
+                    isPlaying = false,
+                    id = null
                 )
             }
         } else {
@@ -119,7 +120,8 @@ class HomeViewModel @Inject constructor(
         _playerState.update {
             it.copy(
                 id = result.id,
-                fileName = result.fileName
+                fileName = result.fileName,
+                description = result.description
             )
         }
         val uri = playerState.value.fileName.toUri()

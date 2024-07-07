@@ -47,6 +47,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import byvto.ru.calmsouldev.BuildConfig
 import byvto.ru.calmsouldev.R
 import byvto.ru.calmsouldev.menuItems
 import kotlinx.coroutines.launch
@@ -151,6 +152,10 @@ fun AboutScreen(
                     modifier = Modifier.clickable {
                         context.openWeb(link = "https://www.byvto.ru")
                     }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Version: " + BuildConfig.VERSION_NAME,
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }

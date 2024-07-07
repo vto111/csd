@@ -50,7 +50,6 @@ class MainViewModel @Inject constructor(
     }
 
     private fun synchronize(context: Context) = runBlocking {
-//        viewModelScope.launch {
         _localList.value = repo.getLocalList()
         repo.getRemoteList()
             .collect { result ->
@@ -58,26 +57,23 @@ class MainViewModel @Inject constructor(
                     is Resource.Success -> {
                         _remoteList.value = result.data ?: emptyList()
                         if (_localList.value.isEmpty()) {
-                            // синхрить все треки (новое устройство)
                             _remoteList.value.forEach { track ->
                                 addRemoteTrack(context, track.id)
                             }
                         } else {
-                            // сравниваем id и синхрим нужные треки
                             _remoteList.value.forEach { track ->
                                 if (!_localList.value.map { it.id }
                                         .contains(track.id)) {
                                     addRemoteTrack(context, track.id)
                                 }
                             }
+//                            showToast("New track downloaded!")
                             _localList.value.forEach { track ->
                                 if (!_remoteList.value.map { it.id }
                                         .contains(track.id)) {
-//                                    Log.e("REMOVE", track.toString())
                                     deleteTrack(track.id)
                                 }
                             }
-//                            _localList.value = repo.getLocalList()
                         }
                     }
 
@@ -92,7 +88,6 @@ class MainViewModel @Inject constructor(
                 }
             }
         _isLoading.value = false
-//        }
     }
 
     private suspend fun addRemoteTrack(context: Context, id: Int) {
@@ -121,7 +116,7 @@ class MainViewModel @Inject constructor(
                             val trackUri =
                                 File(context.getExternalFilesDir("/tracks"), localFileName).toUri()
                             repo.addNewTrack(
-                                id = result.data.id.toInt(),
+                                id = result.data.id,
                                 description = result.data.description,
                                 fileName = trackUri.toString(),
                                 isFinished = false,
@@ -131,27 +126,21 @@ class MainViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        showToast(result.message ?: "Unknown error!")
+                        showToast(result.message ?: "addRemoteTrack error!")
                     }
 
-                    is Resource.Loading -> { /* TODO */
-                    }
+                    is Resource.Loading -> Unit
                 }
             }
     }
 
-    private fun deleteTrack(id: Int) = runBlocking {
-//        viewModelScope.launch {
-            val track = repo.getLocalById(id)
-            val path = URI(track.fileName).path
-            try {
-                repo.deleteTrackById(id)
-                File(path).delete()
-                Log.e("DELETED", path.toString())
-            } catch (e: IOException) {
-                Log.e("DELETE", "failed for file $path!")
-                e.printStackTrace()
-            }
-//        }
+    private suspend fun deleteTrack(id: Int) {
+        val path = URI(repo.getLocalById(id).fileName).path
+        try {
+            repo.deleteTrackById(id)
+            File(path).delete()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 }

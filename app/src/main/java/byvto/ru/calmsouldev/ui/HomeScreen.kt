@@ -114,7 +114,12 @@ fun HomeScreen(
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
-                    title = { Text(text = "Calm Soul") },
+                    title = {
+                        Text(
+                            text =
+                            if (playerState.isPlaying) playerState.description else "Calm Soul"
+                        )
+                    },
                     navigationIcon = {
                         IconButton(onClick = {
                             scope.launch {
@@ -169,6 +174,7 @@ fun HomeScreen(
                                 contentScale = ContentScale.FillWidth
                             )
                         }
+
                     }
                 }
                 if (playerState.allDone) {
@@ -190,9 +196,7 @@ fun HomeScreen(
                         .clip(CircleShape)
                         .background(Color.LightGray)
                         .border(4.dp, Color.Gray, CircleShape)
-                        .clickable {
-                            viewModel.onEvent(MainEvent.BigHeadClick)
-                        },
+                        .clickable { viewModel.onEvent(MainEvent.BigHeadClick) },
                 )
                 Spacer(modifier = Modifier.height(32.dp))
             }
