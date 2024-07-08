@@ -3,6 +3,7 @@ package byvto.ru.calmsouldev.ui
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -117,7 +118,8 @@ fun HomeScreen(
                     title = {
                         Text(
                             text =
-                            if (playerState.isPlaying) playerState.description else "Calm Soul"
+                            if (playerState.isPlaying) playerState.description else "Calm Soul",
+                            modifier = Modifier.basicMarquee()
                         )
                     },
                     navigationIcon = {
