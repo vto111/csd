@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'byvto.ru.calmsouldev'
+    namespace 'byvto.ru.calmsoul'
     compileSdk 34
 
     defaultConfig {
-        applicationId "byvto.ru.calmsouldev"
+        applicationId "byvto.ru.calmsoul"
         minSdk 29
         targetSdk 33
         versionCode 1
