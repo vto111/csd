@@ -27,11 +27,12 @@ class MainActivity() : ComponentActivity() {
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                viewModel.isLoading.value
-            }
-        }
+        installSplashScreen()
+//            .apply {
+//            setKeepOnScreenCondition {
+//                viewModel.isLoading.value
+//            }
+//        }
         setContent {
             CalmSoulDevTheme {
                 val context = LocalContext.current
