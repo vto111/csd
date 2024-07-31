@@ -7,15 +7,15 @@ plugins {
 }
 
 android {
-    namespace 'byvto.ru.calmsoul'
+    namespace 'ru.byvto.calmsoul'
     compileSdk 34
 
     defaultConfig {
-        applicationId "byvto.ru.calmsoul"
+        applicationId 'ru.byvto.calmsoul'
         minSdk 29
         targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
