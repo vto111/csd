@@ -19,14 +19,14 @@ val menuItems = listOf(
         title = "Home",
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home,
-        route = "byvto.ru.calmsoul.HomeScreen"
+        route = "ru.byvto.calmsoul.HomeScreen"
 //        route = "home_screen"
     ),
     MenuItem(
         title = "About",
         selectedIcon = Icons.Filled.Info,
         unselectedIcon = Icons.Outlined.Info,
-        route = "byvto.ru.calmsoul.AboutScreen"
+        route = "ru.byvto.calmsoul.AboutScreen"
 //        route = "about_screen"
     ),
 //    MenuItem(
