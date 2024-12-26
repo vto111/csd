@@ -7,6 +7,3 @@ object HomeScreen
 
 @Serializable
 object AboutScreen
-
-//@Serializable
-//object UpdateScreen

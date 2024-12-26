@@ -47,26 +47,16 @@ class MainActivity() : ComponentActivity() {
                 }
 
                 val navController = rememberNavController()
-//                NavHost(navController = navController, startDestination = "home_screen") {
                 NavHost(navController = navController, startDestination = HomeScreen) {
                     composable<HomeScreen> {
-//                    composable("home_screen") {
                         HomeScreen(
                             viewModel = hiltViewModel(),
                             navController = navController
                         )
                     }
                     composable<AboutScreen> {
-//                    composable("about_screen") {
                         AboutScreen(navController = navController)
                     }
-//                    composable<UpdateScreen> {
-////                    composable("update_screen") {
-//                        UpdateScreen(
-//                            viewModel = hiltViewModel(),
-//                            navController = navController
-//                        )
-//                    }
                 }
             }
         }

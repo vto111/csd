@@ -20,19 +20,11 @@ val menuItems = listOf(
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home,
         route = "ru.byvto.calmsoul.HomeScreen"
-//        route = "home_screen"
     ),
     MenuItem(
         title = "About",
         selectedIcon = Icons.Filled.Info,
         unselectedIcon = Icons.Outlined.Info,
         route = "ru.byvto.calmsoul.AboutScreen"
-//        route = "about_screen"
     ),
-//    MenuItem(
-//        title = "Update",
-//        selectedIcon = Icons.Filled.CheckCircle,
-//        unselectedIcon = Icons.Outlined.CheckCircle,
-//        route = "update_screen"
-//    )
 )
