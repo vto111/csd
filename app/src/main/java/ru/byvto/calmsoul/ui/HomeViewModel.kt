@@ -92,19 +92,19 @@ class HomeViewModel @Inject constructor(
                 !it.isFinished
             }.map { it.id }.random()
             viewModelScope.launch {
-                getById(rnd)
+                playById(rnd)
             }
-            _playerState.update {
-                it.copy(
-                    isPlaying = true
-                )
-            }
+//            _playerState.update {
+//                it.copy(
+//                    isPlaying = true
+//                )
+//            }
         }
     }
 
     private fun repeatFinished(id: Int) {
         viewModelScope.launch {
-            getById(id)
+            playById(id)
         }
         _playerState.update {
             it.copy(
@@ -113,7 +113,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getById(id: Int) {
+    private suspend fun playById(id: Int) {
         val result = repo.getLocalById(id)
         _playerState.update {
             it.copy(
@@ -125,6 +125,11 @@ class HomeViewModel @Inject constructor(
         val uri = playerState.value.fileName.toUri()
         player.setMediaItem(MediaItem.fromUri(uri))
         player.prepare()
+        _playerState.update {
+            it.copy(
+                isPlaying = true
+            )
+        }
     }
 
     private fun setFinished(id: Int) {

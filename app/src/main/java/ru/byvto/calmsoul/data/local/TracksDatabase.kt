@@ -5,7 +5,8 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [TrackEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class TracksDatabase: RoomDatabase() {
 

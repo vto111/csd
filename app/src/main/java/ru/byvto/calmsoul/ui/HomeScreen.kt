@@ -1,16 +1,27 @@
 package ru.byvto.calmsoul.ui
 
 import androidx.annotation.OptIn
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -46,6 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -140,15 +152,16 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .padding(paddingValues = it)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(modifier = Modifier.weight(1f))
+//                Spacer(modifier = Modifier.weight(1f))
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(7),
                     modifier = Modifier
+                        .weight(1f)
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(16.dp),
                 ) {
                     items(playList.size) { item ->
                         Box(
@@ -180,28 +193,50 @@ fun HomeScreen(
                     }
                 }
                 if (playerState.allDone) {
-                    Spacer(modifier = Modifier.weight(1f))
+//                    Spacer(modifier = Modifier.weight(1f))
                     Button(
                         modifier = Modifier.background(MaterialTheme.colorScheme.background),
                         onClick = { viewModel.onEvent(MainEvent.ResetClick) }
                     ) {
                         Text(text = "RESET")
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v2),
-                    contentDescription = "head",
-                    modifier = Modifier
-                        .size(200.dp)
-//                        .fillMaxWidth()
-                        .clip(CircleShape)
-                        .background(Color.LightGray)
-                        .border(4.dp, Color.Gray, CircleShape)
-                        .clickable { viewModel.onEvent(MainEvent.BigHeadClick) },
+//                Spacer(modifier = Modifier.weight(1f))
+                BigButton(
+                    modifier = Modifier.height(200.dp),
+                    isPlaying = playerState.isPlaying,
+                    onClick = { viewModel.onEvent(MainEvent.BigHeadClick) }
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
+}
+
+@Composable
+fun BigButton(
+    modifier: Modifier = Modifier,
+    isPlaying: Boolean,
+    onClick: () -> Unit
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "InfiniteTransition")
+    val color by infiniteTransition.animateColor(
+        initialValue = Color.White,
+        targetValue = Color.DarkGray,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "ColorAnimation"
+    )
+    Image(
+        imageVector = ImageVector.vectorResource(id = R.drawable.tollev_white_v3),
+        contentDescription = "BigHead",
+        modifier = modifier
+            .size(200.dp)
+            .clip(CircleShape)
+            .background(if (isPlaying) color else Color.White)
+            .clickable { onClick() },
+    )
 }
