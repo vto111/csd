@@ -1,6 +1,6 @@
 package ru.byvto.calmsoul.ui
 
-import androidx.annotation.OptIn
+import android.widget.Toast
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -11,26 +11,25 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridLayoutInfo
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,7 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -57,18 +56,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import ru.byvto.calmsoul.MainEvent
 import ru.byvto.calmsoul.R
 import ru.byvto.calmsoul.menuItems
 import kotlinx.coroutines.launch
 
-@kotlin.OptIn(ExperimentalMaterial3Api::class)
-@OptIn(UnstableApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
@@ -80,11 +77,29 @@ fun HomeScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedMenuIndex by rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
+    val isLoading by viewModel.isLoading.collectAsState()
+    val context = LocalContext.current
+    val listState = rememberLazyGridState()
+
+    val currentIndex by viewModel.currentIndex.collectAsState()
 
     LaunchedEffect(true) {
         viewModel.getTrackList()
+        viewModel.channel.collect { event ->
+            when (event) {
+                is MainEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                }
+                else -> Unit
+            }
+        }
+    }
+
+    LaunchedEffect(currentIndex) {
+        listState.animateScrollToItem(currentIndex)
+//        listState.animateScrollToItemCenter(currentIndex)
     }
 
     ModalNavigationDrawer(
@@ -130,7 +145,7 @@ fun HomeScreen(
                     title = {
                         Text(
                             text =
-                            if (playerState.isPlaying) playerState.description else "Calm Soul",
+                                if (playerState.isPlaying) playerState.description else "Calm Soul",
                             modifier = Modifier.basicMarquee()
                         )
                     },
@@ -156,13 +171,23 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 //                Spacer(modifier = Modifier.weight(1f))
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .weight(1f)
+//                            .fillMaxWidth()
+                            .padding(16.dp),
+                    )
+                }
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(7),
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
                         .padding(16.dp),
+                    state = listState
                 ) {
+
                     items(playList.size) { item ->
                         Box(
                             modifier = Modifier
@@ -189,11 +214,11 @@ fun HomeScreen(
                                 contentScale = ContentScale.FillWidth
                             )
                         }
-
                     }
+
                 }
+
                 if (playerState.allDone) {
-//                    Spacer(modifier = Modifier.weight(1f))
                     Button(
                         modifier = Modifier.background(MaterialTheme.colorScheme.background),
                         onClick = { viewModel.onEvent(MainEvent.ResetClick) }
@@ -202,7 +227,6 @@ fun HomeScreen(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
-//                Spacer(modifier = Modifier.weight(1f))
                 BigButton(
                     modifier = Modifier.height(200.dp),
                     isPlaying = playerState.isPlaying,
@@ -239,4 +263,23 @@ fun BigButton(
             .background(if (isPlaying) color else Color.White)
             .clickable { onClick() },
     )
+}
+
+suspend fun LazyGridState.animateScrollToItemCenter(index: Int) {
+    layoutInfo.resolveItemOffsetToCenter(index)?.let {
+        animateScrollToItem(index, it)
+        return
+    }
+
+    scrollToItem(index)
+
+    layoutInfo.resolveItemOffsetToCenter(index)?.let {
+        animateScrollToItem(index, it)
+    }
+}
+
+private fun LazyGridLayoutInfo.resolveItemOffsetToCenter(index: Int): Int? {
+    val itemInfo = visibleItemsInfo.firstOrNull { it.index == index } ?: return null
+    val containerSize = viewportSize.width - beforeContentPadding - afterContentPadding
+    return -(containerSize - itemInfo.size.height) / 2
 }

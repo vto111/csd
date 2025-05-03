@@ -21,9 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity() : ComponentActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
-
-    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -34,17 +31,6 @@ class MainActivity() : ComponentActivity() {
 //        }
         setContent {
             CalmSoulDevTheme {
-                val context = LocalContext.current
-                LaunchedEffect(true) {
-                    viewModel.channel.collect { event ->
-                        when (event) {
-                            is MainEvent.ShowToast -> {
-                                Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
-                            }
-                            else -> Unit
-                        }
-                    }
-                }
 
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = HomeScreen) {
